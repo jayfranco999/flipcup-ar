@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Cup AR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1a0a2e;
+            overflow: hidden;
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        #game-container { position: relative; width: 100vw; height: 100vh; }
+        #webcam { position: absolute; opacity: 0; pointer-events: none; }
+
+        /* Vaporwave Background */
+        .vaporwave-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg,
+                #0f0520 0%,
+                #1a0a3a 20%,
+                #2d1b4e 40%,
+                #ff6b9d 70%,
+                #ffa07a 85%,
+                #ffcc00 100%
+            );
+            overflow: hidden;
+        }
+
+        /* Perspective Grid */
+        .grid-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            perspective: 400px;
+            overflow: hidden;
+        }
+        .grid {
+            position: absolute;
+            bottom: 0;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image:
+                linear-gradient(to right, #ff00ff33 1px, transparent 1px),
+                linear-gradient(to bottom, #ff00ff33 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: rotateX(60deg);
+            animation: gridMove 2s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: rotateX(60deg) translateY(0); }
+            100% { transform: rotateX(60deg) translateY(60px); }
+        }
+
+        /* Sun */
+        .sun {
+            position: absolute;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(180deg, #ffcc00 0%, #ff6b6b 50%, #ff00ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 100px #ff6b6b, 0 0 200px #ff00ff55;
+        }
+        .sun-lines {
+            position: absolute;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 150px;
+            overflow: hidden;
+        }
+        .sun-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: #1a0a2e;
+        }
+
+        /* Neon Signs */
+        .neon-sign {
+            position: absolute;
+            font-size: 14px;
+            text-shadow:
+                0 0 5px currentColor,
+                0 0 10px currentColor,
+                0 0 20px currentColor,
+                0 0 40px currentColor;
+            animation: flicker 3s infinite;
+        }
+        @keyframes flicker {
+            0%, 95%, 100% { opacity: 1; }
+            96%, 98% { opacity: 0.8; }
+            97% { opacity: 0.4; }
+        }
+        .neon-left { top: 80px; left: 30px; color: #00ffff; }
+        .neon-right { top: 80px; right: 30px; color: #ff00ff; }
+
+        /* Webcam preview */
+        #webcam-area {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+        #webcam-preview {
+            width: 360px;
+            height: 270px;
+            border: 4px solid #00ffff;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 20px #00ffff55, 0 0 40px #ff00ff33;
+        }
+        #webcam-preview video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+
+        .hand-indicator {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            pointer-events: none;
+            display: none;
+            transform: translate(-50%, -50%);
+        }
+        #hand-left { background: rgba(255, 107, 157, 0.8); box-shadow: 0 0 15px #ff6b9d; }
+        #hand-right { background: rgba(0, 255, 255, 0.8); box-shadow: 0 0 15px #00ffff; }
+
+        .gesture-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #fff;
+            white-space: nowrap;
+            background: rgba(0,0,0,0.8);
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        /* Setup Screen */
+        #setup-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 200;
+        }
+        .title {
+            font-size: 64px;
+            color: #00ffff;
+            margin-bottom: 5px;
+            text-shadow:
+                4px 4px 0 #ff00ff,
+                0 0 20px #00ffff,
+                0 0 40px #00ffff;
+            letter-spacing: 8px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #ff6b9d;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #ff6b9d;
+            letter-spacing: 4px;
+        }
+
+        .instructions {
+            background: rgba(0,0,0,0.85);
+            border: 2px solid #ff00ff;
+            padding: 20px 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 0 20px #ff00ff55;
+        }
+        .instructions p {
+            color: #fff;
+            font-size: 12px;
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+        .instructions .highlight { color: #00ffff; }
+
+        /* Mode Selection */
+        .mode-select {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .mode-btn {
+            padding: 20px 25px;
+            background: rgba(0,0,0,0.8);
+            border: 3px solid #444;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 160px;
+            text-align: center;
+        }
+        .mode-btn:hover, .mode-btn.selected {
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 20px #00ffff55;
+        }
+        .mode-btn .mode-name {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .mode-btn .mode-desc {
+            font-size: 8px;
+            color: #ff6b9d;
+            line-height: 1.6;
+        }
+
+        .team-setup { display: flex; gap: 60px; margin-bottom: 30px; }
+        .team-box {
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            padding: 25px 40px;
+            border: 2px solid #333;
+        }
+        .team-box.team-a { border-color: #ff6b9d; box-shadow: 0 0 15px #ff6b9d33; }
+        .team-box.team-b { border-color: #00ffff; box-shadow: 0 0 15px #00ffff33; }
+        .team-label { font-size: 20px; color: #fff; margin-bottom: 15px; }
+        .team-a .team-label { color: #ff6b9d; text-shadow: 0 0 10px #ff6b9d; }
+        .team-b .team-label { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
+
+        .player-count { display: flex; align-items: center; gap: 15px; }
+        .player-count button {
+            width: 40px; height: 40px; font-size: 20px; border: none;
+            background: #333; color: #fff; cursor: pointer;
+            font-family: 'Press Start 2P', monospace;
+        }
+        .player-count button:hover { background: #555; }
+        .player-count .count { font-size: 36px; color: #fff; width: 50px; text-align: center; }
+
+        #start-btn {
+            padding: 20px 60px; font-size: 20px;
+            background: linear-gradient(180deg, #ff00ff, #ff6b9d);
+            color: #fff; border: none; cursor: pointer;
+            text-shadow: 2px 2px 0 #000;
+            box-shadow: 0 0 30px #ff00ff55;
+            transition: all 0.2s;
+            font-family: 'Press Start 2P', monospace;
+        }
+        #start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px #ff00ff88;
+        }
+
+        /* Game Screen */
+        #game-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .split-screen { display: flex; width: 100%; height: calc(100% - 310px); }
+        .team-side {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            padding: 20px; position: relative;
+        }
+        .team-side.team-a { border-right: 3px solid #ff00ff55; }
+
+        .team-header {
+            font-size: 28px; font-weight: bold; margin-bottom: 10px;
+        }
+        .team-a .team-header { color: #ff6b9d; text-shadow: 0 0 20px #ff6b9d; }
+        .team-b .team-header { color: #00ffff; text-shadow: 0 0 20px #00ffff; }
+
+        .player-indicators { display: flex; gap: 12px; margin-bottom: 15px; }
+        .player-dot {
+            width: 30px; height: 30px; border-radius: 50%; background: #333;
+            border: 3px solid #666; transition: all 0.3s;
+        }
+        .player-dot.done { background: #00ff00; border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
+        .player-dot.active {
+            background: #ffcc00;
+            border-color: #ffcc00;
+            animation: pulse 0.8s infinite;
+            box-shadow: 0 0 20px #ffcc00;
+        }
+        .player-dot.eliminated { background: #ff0000; border-color: #ff0000; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        .game-area {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start;
+            width: 100%; padding-top: 10px;
+        }
+
+        /* Status Messages */
+        .status-message {
+            font-size: 32px; font-weight: bold; color: #fff; text-align: center;
+            text-shadow: 0 0 20px currentColor; margin-bottom: 15px;
+            min-height: 50px;
+        }
+        .status-message.drink { color: #ffcc00; }
+        .status-message.ready { color: #00ffff; }
+
+        .player-state {
+            font-size: 12px;
+            color: #fff;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 15px;
+            margin-bottom: 10px;
+        }
+        .player-state.raised { background: #00aa00; box-shadow: 0 0 10px #00ff00; }
+
+        /* Shot Meter */
+        .meter-container {
+            width: 90%; max-width: 320px; height: 35px; background: #111;
+            position: relative; overflow: hidden;
+            border: 3px solid #00ffff;
+            margin-bottom: 20px;
+            display: none;
+            box-shadow: 0 0 15px #00ffff55;
+        }
+        .meter-zones {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+        }
+        .meter-zone { height: 100%; }
+        .meter-zone.red-left { flex: 2; background: #aa0000; }
+        .meter-zone.yellow-left { flex: 1.5; background: #aa8800; }
+        .meter-zone.green { flex: 1.5; background: #00aa00; }
+        .meter-zone.sweet-spot { flex: 0.5; background: #00ff00; box-shadow: inset 0 0 10px #fff; }
+        .meter-zone.green-right { flex: 1.5; background: #00aa00; }
+        .meter-zone.yellow-right { flex: 1.5; background: #aa8800; }
+        .meter-zone.red-right { flex: 2; background: #aa0000; }
+
+        .meter-needle {
+            position: absolute; top: -5px; bottom: -5px; width: 6px;
+            background: #fff; border: 2px solid #000;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px #fff;
+        }
+
+        /* Cup Area */
+        .cup-area {
+            width: 100%;
+            max-width: 280px;
+            height: 160px;
+            position: relative;
+        }
+
+        .bar-surface {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35px;
+            background: linear-gradient(180deg, #4a3728 0%, #2a1a10 100%);
+            border: 3px solid #1a0a05;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .bar-surface::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        .cup {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            width: 50px;
+            height: 70px;
+            transform: translateX(-50%);
+            transition: transform 0.3s ease;
+        }
+
+        .cup-body { fill: #ff0044; stroke: #aa0033; stroke-width: 2; }
+        .cup-rim { fill: #ff3366; }
+        .cup-shine { fill: rgba(255,255,255,0.3); }
+        .cup-beer { fill: #ffaa00; }
+
+        .cup.on-edge { transform: translateX(-50%) translateX(35px); }
+        .cup.flipped { transform: translateX(-50%) rotate(180deg); bottom: 33px; }
+        .cup.fallen { transform: translateX(-50%) rotate(90deg) translateY(15px); bottom: 45px; }
+
+        /* BIG FEEDBACK TEXT */
+        .feedback-flash {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 50;
+        }
+        .feedback-flash.show {
+            animation: feedbackPop 1.2s ease-out forwards;
+        }
+        @keyframes feedbackPop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+            40% { transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+        }
+        .feedback-flash.perfect { color: #00ff00; text-shadow: 0 0 30px #00ff00, 0 0 60px #00ff00; }
+        .feedback-flash.clean { color: #00ffaa; text-shadow: 0 0 30px #00ffaa; }
+        .feedback-flash.sloppy { color: #ffaa00; text-shadow: 0 0 30px #ffaa00; }
+        .feedback-flash.lucky { color: #ff00ff; text-shadow: 0 0 30px #ff00ff; }
+        .feedback-flash.choke { color: #ff0000; text-shadow: 0 0 30px #ff0000; }
+        .feedback-flash.pathetic { color: #ff0044; text-shadow: 0 0 30px #ff0044; animation: feedbackShake 1.2s ease-out forwards; }
+        .feedback-flash.clutch { color: #ffcc00; text-shadow: 0 0 40px #ffcc00, 0 0 80px #ff6600; }
+
+        @keyframes feedbackShake {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(-5deg); }
+            30% { transform: translate(-50%, -50%) scale(1) rotate(5deg); }
+            40% { transform: translate(-50%, -50%) scale(1) rotate(-3deg); }
+            50% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+        }
+
+        .result-flash {
+            font-size: 28px; font-weight: bold;
+            text-shadow: 0 0 15px currentColor;
+            min-height: 40px;
+            margin-top: 5px;
+        }
+        .result-flash.success { color: #00ff00; }
+        .result-flash.fail { color: #ff0000; }
+
+        .attempt-counter {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        /* Mode-specific UI */
+        .mode-timer {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+        }
+        .mode-timer.warning { color: #ff6600; text-shadow: 0 0 20px #ff6600; animation: timerPulse 0.5s infinite; }
+        @keyframes timerPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+        .combo-display {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+        }
+
+        .flip-count {
+            font-size: 14px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+            margin-top: 10px;
+        }
+
+        /* Win Screen */
+        #win-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: none; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 300;
+        }
+        .winner-text {
+            font-size: 56px; font-weight: bold; margin-bottom: 20px;
+        }
+        .winner-text.team-a { color: #ff6b9d; text-shadow: 0 0 40px #ff6b9d; }
+        .winner-text.team-b { color: #00ffff; text-shadow: 0 0 40px #00ffff; }
+        .loser-text { font-size: 24px; color: #ffcc00; margin-bottom: 40px; text-shadow: 0 0 15px #ffcc00; }
+
+        .final-stats {
+            background: rgba(0,0,0,0.8);
+            border: 3px solid #ff00ff;
+            padding: 30px 50px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .stat-line { font-size: 14px; color: #fff; margin: 12px 0; }
+        .stat-value { color: #00ffff; }
+
+        #play-again-btn {
+            padding: 20px 50px; font-size: 18px;
+            background: linear-gradient(180deg, #00ffff, #0088aa);
+            color: #000; border: none; cursor: pointer;
+            font-family: 'Press Start 2P', monospace;
+            box-shadow: 0 0 30px #00ffff55;
+        }
+        #play-again-btn:hover { box-shadow: 0 0 50px #00ffff88; }
+
+        #loading {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 16px; color: #00ffff; z-index: 400; background: #0a0015;
+            padding: 30px 50px; border: 3px solid #ff00ff;
+            text-shadow: 0 0 10px #00ffff;
+            box-shadow: 0 0 30px #ff00ff55;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <video id="webcam" autoplay playsinline></video>
+
+        <!-- Vaporwave Background -->
+        <div class="vaporwave-bg">
+            <div class="sun"></div>
+            <div class="sun-lines">
+                <div class="sun-line" style="top: 20%"></div>
+                <div class="sun-line" style="top: 35%"></div>
+                <div class="sun-line" style="top: 48%"></div>
+                <div class="sun-line" style="top: 60%"></div>
+                <div class="sun-line" style="top: 72%"></div>
+                <div class="sun-line" style="top: 82%"></div>
+                <div class="sun-line" style="top: 90%"></div>
+            </div>
+            <div class="grid-container">
+                <div class="grid"></div>
+            </div>
+        </div>
+
+        <!-- Neon Signs -->
+        <div class="neon-sign neon-left">TEAM A</div>
+        <div class="neon-sign neon-right">TEAM B</div>
+
+        <!-- Setup Screen -->
+        <div id="setup-screen">
+            <div class="title">FLIP CUP</div>
+            <div class="subtitle">VAPORWAVE EDITION</div>
+
+            <div class="instructions">
+                <p><span class="highlight">1.</span> DRINK YOUR CUP IRL</p>
+                <p><span class="highlight">2.</span> RAISE HAND WHEN READY</p>
+                <p><span class="highlight">3.</span> FLICK UP ON THE BEAT</p>
+            </div>
+
+            <div class="mode-select">
+                <button class="mode-btn selected" data-mode="classic">
+                    <div class="mode-name">CLASSIC</div>
+                    <div class="mode-desc">RELAY RACE<br>5 FLIPS EACH</div>
+                </button>
+                <button class="mode-btn" data-mode="sudden">
+                    <div class="mode-name">SUDDEN DEATH</div>
+                    <div class="mode-desc">MISS = OUT<br>LAST STANDING</div>
+                </button>
+                <button class="mode-btn" data-mode="speed">
+                    <div class="mode-name">SPEED DEMON</div>
+                    <div class="mode-desc">60 SECONDS<br>MOST FLIPS WINS</div>
+                </button>
+            </div>
+
+            <div class="team-setup">
+                <div class="team-box team-a">
+                    <div class="team-label">TEAM A</div>
+                    <div class="player-count">
+                        <button onclick="adjustTeam('a', -1)">-</button>
+                        <span class="count" id="team-a-count">2</span>
+                        <button onclick="adjustTeam('a', 1)">+</button>
+                    </div>
+                </div>
+                <div class="team-box team-b">
+                    <div class="team-label">TEAM B</div>
+                    <div class="player-count">
+                        <button onclick="adjustTeam('b', -1)">-</button>
+                        <span class="count" id="team-b-count">2</span>
+                        <button onclick="adjustTeam('b', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="start-btn" onclick="startGame()">START</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen">
+            <!-- Mode-specific UI -->
+            <div class="mode-timer hidden" id="mode-timer">60</div>
+            <div class="combo-display hidden" id="combo-display">0x COMBO</div>
+
+            <div class="split-screen">
+                <!-- Team A Side -->
+                <div class="team-side team-a">
+                    <div class="team-header">TEAM A</div>
+                    <div class="player-indicators" id="team-a-indicators"></div>
+                    <div class="game-area">
+                        <div class="status-message" id="status-a"></div>
+                        <div class="player-state" id="state-a">Waiting...</div>
+                        <div class="meter-container" id="meter-a">
+                            <div class="meter-zones">
+                                <div class="meter-zone red-left"></div>
+                                <div class="meter-zone yellow-left"></div>
+                                <div class="meter-zone green"></div>
+                                <div class="meter-zone sweet-spot"></div>
+                                <div class="meter-zone green-right"></div>
+                                <div class="meter-zone yellow-right"></div>
+                                <div class="meter-zone red-right"></div>
+                            </div>
+                            <div class="meter-needle" id="needle-a" style="left: 50%"></div>
+                        </div>
+                        <div class="cup-area">
+                            <div class="cup" id="cup-a">
+                                <svg viewBox="0 0 50 70" width="50" height="70">
+                                    <path class="cup-body" d="M5,5 L45,5 L40,65 Q40,70 25,70 Q10,70 10,65 Z"/>
+                                    <rect class="cup-rim" x="3" y="0" width="44" height="8" rx="2"/>
+                                    <ellipse class="cup-beer" cx="25" cy="20" rx="15" ry="8"/>
+                                    <ellipse class="cup-shine" cx="15" cy="15" rx="6" ry="4"/>
+                                </svg>
+                            </div>
+                            <div class="bar-surface"></div>
+                        </div>
+                        <div class="result-flash" id="result-a"></div>
+                        <div class="attempt-counter" id="attempts-a"></div>
+                        <div class="flip-count" id="flips-a"></div>
+                    </div>
+                    <div class="feedback-flash" id="feedback-a"></div>
+                </div>
+
+                <!-- Team B Side -->
+                <div class="team-side team-b">
+                    <div class="team-header">TEAM B</div>
+                    <div class="player-indicators" id="team-b-indicators"></div>
+                    <div class="game-area">
+                        <div class="status-message" id="status-b"></div>
+                        <div class="player-state" id="state-b">Waiting...</div>
+                        <div class="meter-container" id="meter-b">
+                            <div class="meter-zones">
+                                <div class="meter-zone red-left"></div>
+                                <div class="meter-zone yellow-left"></div>
+                                <div class="meter-zone green"></div>
+                                <div class="meter-zone sweet-spot"></div>
+                                <div class="meter-zone green-right"></div>
+                                <div class="meter-zone yellow-right"></div>
+                                <div class="meter-zone red-right"></div>
+                            </div>
+                            <div class="meter-needle" id="needle-b" style="left: 50%"></div>
+                        </div>
+                        <div class="cup-area">
+                            <div class="cup" id="cup-b">
+                                <svg viewBox="0 0 50 70" width="50" height="70">
+                                    <path class="cup-body" d="M5,5 L45,5 L40,65 Q40,70 25,70 Q10,70 10,65 Z"/>
+                                    <rect class="cup-rim" x="3" y="0" width="44" height="8" rx="2"/>
+                                    <ellipse class="cup-beer" cx="25" cy="20" rx="15" ry="8"/>
+                                    <ellipse class="cup-shine" cx="15" cy="15" rx="6" ry="4"/>
+                                </svg>
+                            </div>
+                            <div class="bar-surface"></div>
+                        </div>
+                        <div class="result-flash" id="result-b"></div>
+                        <div class="attempt-counter" id="attempts-b"></div>
+                        <div class="flip-count" id="flips-b"></div>
+                    </div>
+                    <div class="feedback-flash" id="feedback-b"></div>
+                </div>
+            </div>
+
+            <!-- Webcam Area -->
+            <div id="webcam-area">
+                <div id="webcam-preview">
+                    <video id="preview-video" autoplay playsinline muted></video>
+                    <div class="hand-indicator" id="hand-left">
+                        <span class="gesture-label" id="gesture-left"></span>
+                    </div>
+                    <div class="hand-indicator" id="hand-right">
+                        <span class="gesture-label" id="gesture-right"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Win Screen -->
+        <div id="win-screen">
+            <div class="winner-text" id="winner-text">TEAM A WINS!</div>
+            <div class="loser-text" id="loser-text">LOSERS DRINK UP!</div>
+            <div class="final-stats" id="final-stats">
+                <p class="stat-line">TOTAL FLIPS: <span class="stat-value" id="stat-flips">0</span></p>
+                <p class="stat-line">BEST COMBO: <span class="stat-value" id="stat-combo">0</span></p>
+            </div>
+            <button id="play-again-btn" onclick="resetGame()">PLAY AGAIN</button>
+        </div>
+
+        <div id="loading">LOADING CAMERA...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const previewVideo = document.getElementById('preview-video');
+
+        // ============ GAME CONFIG ============
+        const config = {
+            flipsPerPlayer: 5, // For testing - will revert to 1
+            baseMeterSpeed: 1.2,
+            meterSpeedIncrease: 0.15, // Speed up per completed player
+            // Zone positions (percentage): red(0-20), yellow(20-35), green(35-47.5), sweet(47.5-52.5), green(52.5-65), yellow(65-80), red(80-100)
+            sweetSpotMin: 47.5,
+            sweetSpotMax: 52.5,
+            greenMin: 35,
+            greenMax: 65,
+            yellowMin: 20,
+            yellowMax: 80,
+            // Success rates
+            sweetSpotChance: 0.95,
+            greenChance: 0.70,
+            yellowChance: 0.35,
+            redChance: 0.10,
+            maxAttempts: 5
+        };
+
+        // ============ GAME STATE ============
+        const game = {
+            mode: 'classic', // 'classic', 'sudden', 'speed'
+            teamACount: 2,
+            teamBCount: 2,
+            teams: {
+                a: { progress: 0, phase: 'waiting', meterPos: 50, meterDir: 1, attempts: 0, handRaised: false, flips: 0, combo: 0, bestCombo: 0, eliminated: false, currentFlip: 0 },
+                b: { progress: 0, phase: 'waiting', meterPos: 50, meterDir: 1, attempts: 0, handRaised: false, flips: 0, combo: 0, bestCombo: 0, eliminated: false, currentFlip: 0 }
+            },
+            started: false,
+            timeLeft: 60,
+            startTime: 0,
+            globalCombo: 0,
+            globalBestCombo: 0,
+            hands: {
+                left: { x: 0, y: 0, visible: false, gesture: '', lastY: 0 },
+                right: { x: 0, y: 0, visible: false, gesture: '', lastY: 0 }
+            }
+        };
+
+        // ============ FEEDBACK MESSAGES ============
+        const feedback = {
+            perfect: 'PERFECT!',
+            clean: 'CLEAN!',
+            sloppy: 'SLOPPY!',
+            lucky: 'LUCKY!',
+            choke: 'CHOKE!',
+            pathetic: 'PATHETIC!',
+            clutch: 'CLUTCH!'
+        };
+
+        // ============ MODE SELECTION ============
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                game.mode = btn.dataset.mode;
+            });
+        });
+
+        // ============ TEAM SETUP ============
+        function adjustTeam(team, delta) {
+            if (team === 'a') {
+                game.teamACount = Math.max(1, Math.min(4, game.teamACount + delta));
+                document.getElementById('team-a-count').textContent = game.teamACount;
+            } else {
+                game.teamBCount = Math.max(1, Math.min(4, game.teamBCount + delta));
+                document.getElementById('team-b-count').textContent = game.teamBCount;
+            }
+        }
+
+        function createPlayerIndicators() {
+            ['a', 'b'].forEach(team => {
+                const container = document.getElementById(`team-${team}-indicators`);
+                const count = team === 'a' ? game.teamACount : game.teamBCount;
+                container.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'player-dot' + (i === 0 ? ' active' : '');
+                    dot.id = `dot-${team}-${i}`;
+                    container.appendChild(dot);
+                }
+            });
+        }
+
+        // ============ FEEDBACK FLASH ============
+        function showFeedback(team, type) {
+            const el = document.getElementById(`feedback-${team}`);
+            el.textContent = feedback[type];
+            el.className = `feedback-flash ${type} show`;
+            setTimeout(() => {
+                el.classList.remove('show');
+            }, 1200);
+        }
+
+        // ============ GAME FLOW ============
+        function startGame() {
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+
+            // Reset state
+            game.teams.a = { progress: 0, phase: 'waiting', meterPos: 50, meterDir: 1, attempts: 0, handRaised: false, flips: 0, combo: 0, bestCombo: 0, eliminated: false, currentFlip: 0 };
+            game.teams.b = { progress: 0, phase: 'waiting', meterPos: 50, meterDir: 1, attempts: 0, handRaised: false, flips: 0, combo: 0, bestCombo: 0, eliminated: false, currentFlip: 0 };
+            game.started = true;
+            game.timeLeft = 60;
+            game.startTime = Date.now();
+            game.globalCombo = 0;
+            game.globalBestCombo = 0;
+
+            createPlayerIndicators();
+
+            // Mode-specific setup
+            if (game.mode === 'speed') {
+                document.getElementById('mode-timer').classList.remove('hidden');
+                document.getElementById('combo-display').classList.remove('hidden');
+            } else {
+                document.getElementById('mode-timer').classList.add('hidden');
+                document.getElementById('combo-display').classList.add('hidden');
+            }
+
+            // Start both teams
+            startDrinkPhase('a');
+            startDrinkPhase('b');
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function getMeterSpeed(team) {
+            const t = game.teams[team];
+            return config.baseMeterSpeed + (t.progress * config.meterSpeedIncrease);
+        }
+
+        function startDrinkPhase(team) {
+            const t = game.teams[team];
+            if (t.eliminated) return;
+
+            t.phase = 'drink';
+            t.handRaised = false;
+            t.attempts = 0;
+
+            updateStatus(team, 'DRINK & RAISE', 'drink');
+            updateState(team, 'Raise hand when ready', '');
+            updateAttempts(team, '');
+
+            const cup = document.getElementById(`cup-${team}`);
+            cup.className = 'cup';
+
+            document.getElementById(`meter-${team}`).style.display = 'none';
+            document.getElementById(`result-${team}`).textContent = '';
+
+            if (game.mode === 'speed') {
+                document.getElementById(`flips-${team}`).textContent = `FLIPS: ${t.flips}`;
+            } else if (game.mode === 'classic') {
+                document.getElementById(`flips-${team}`).textContent = `${t.currentFlip}/${config.flipsPerPlayer}`;
+            } else {
+                document.getElementById(`flips-${team}`).textContent = '';
+            }
+        }
+
+        function startFlipPhase(team) {
+            const t = game.teams[team];
+            t.phase = 'countdown';
+
+            updateStatus(team, 'GET READY', '');
+            updateState(team, '', '');
+
+            document.getElementById(`cup-${team}`).className = 'cup on-edge';
+
+            setTimeout(() => updateStatus(team, '3', ''), 400);
+            setTimeout(() => updateStatus(team, '2', ''), 800);
+            setTimeout(() => updateStatus(team, '1', ''), 1200);
+            setTimeout(() => {
+                t.phase = 'flip';
+                t.meterPos = 50;
+                t.meterDir = Math.random() > 0.5 ? 1 : -1; // Random start direction
+                updateStatus(team, 'FLICK!', 'ready');
+                updateState(team, 'Flick UP now!', '');
+                document.getElementById(`meter-${team}`).style.display = 'block';
+                updateAttempts(team, `Attempt ${t.attempts + 1}/${config.maxAttempts}`);
+            }, 1600);
+        }
+
+        function updateStatus(team, text, className) {
+            const el = document.getElementById(`status-${team}`);
+            el.textContent = text;
+            el.className = 'status-message' + (className ? ` ${className}` : '');
+        }
+
+        function updateState(team, text, className) {
+            const el = document.getElementById(`state-${team}`);
+            el.textContent = text;
+            el.className = 'player-state' + (className ? ` ${className}` : '');
+        }
+
+        function updateAttempts(team, text) {
+            document.getElementById(`attempts-${team}`).textContent = text;
+        }
+
+        // ============ GAME LOOP ============
+        function gameLoop() {
+            if (!game.started) return;
+
+            // Speed mode timer
+            if (game.mode === 'speed') {
+                game.timeLeft = 60 - (Date.now() - game.startTime) / 1000;
+                const timerEl = document.getElementById('mode-timer');
+                timerEl.textContent = Math.ceil(Math.max(0, game.timeLeft));
+                timerEl.className = game.timeLeft < 10 ? 'mode-timer warning' : 'mode-timer';
+
+                document.getElementById('combo-display').textContent = game.globalCombo > 0 ? `${game.globalCombo}x COMBO` : '';
+
+                if (game.timeLeft <= 0) {
+                    endGame();
+                    return;
+                }
+            }
+
+            // Update meters
+            ['a', 'b'].forEach(team => {
+                const t = game.teams[team];
+                if (t.phase === 'flip') {
+                    const speed = getMeterSpeed(team);
+                    t.meterPos += t.meterDir * speed;
+                    if (t.meterPos >= 100) { t.meterPos = 100; t.meterDir = -1; }
+                    if (t.meterPos <= 0) { t.meterPos = 0; t.meterDir = 1; }
+                    document.getElementById(`needle-${team}`).style.left = t.meterPos + '%';
+                }
+            });
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ============ HAND DETECTION ============
+        function onHandResults(results) {
+            game.hands.left.visible = false;
+            game.hands.right.visible = false;
+
+            document.getElementById('hand-left').style.display = 'none';
+            document.getElementById('hand-right').style.display = 'none';
+
+            if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+                return;
+            }
+
+            results.multiHandLandmarks.forEach((landmarks, idx) => {
+                const wrist = landmarks[0];
+                const indexTip = landmarks[8];
+
+                const side = wrist.x > 0.5 ? 'left' : 'right';
+                const team = side === 'left' ? 'a' : 'b';
+
+                const hand = game.hands[side];
+                hand.visible = true;
+                hand.x = (1 - wrist.x) * 360;
+                hand.y = wrist.y * 270;
+
+                const indicator = document.getElementById(`hand-${side}`);
+                indicator.style.display = 'block';
+                indicator.style.left = hand.x + 'px';
+                indicator.style.top = hand.y + 'px';
+
+                const isRaised = wrist.y < 0.35;
+                const flickVelocity = (hand.lastY || wrist.y) - indexTip.y;
+                const isFlicking = flickVelocity > 0.06;
+
+                hand.lastY = indexTip.y;
+
+                let gestureText = '';
+                if (isRaised) gestureText = 'RAISED';
+                else if (isFlicking) gestureText = 'FLICK!';
+                document.getElementById(`gesture-${side}`).textContent = gestureText;
+
+                const t = game.teams[team];
+                if (t.eliminated) return;
+
+                if (t.phase === 'drink' && isRaised && !t.handRaised) {
+                    t.handRaised = true;
+                    updateState(team, 'READY!', 'raised');
+                    startFlipPhase(team);
+                }
+
+                if (t.phase === 'flip' && isFlicking) {
+                    handleFlip(team);
+                }
+            });
+        }
+
+        function handleFlip(team) {
+            const t = game.teams[team];
+            if (t.phase !== 'flip') return;
+
+            t.phase = 'animating';
+            t.attempts++;
+
+            const pos = t.meterPos;
+            let successChance;
+            let zone;
+
+            // Determine zone and success chance
+            if (pos >= config.sweetSpotMin && pos <= config.sweetSpotMax) {
+                successChance = config.sweetSpotChance;
+                zone = 'sweet';
+            } else if (pos >= config.greenMin && pos <= config.greenMax) {
+                successChance = config.greenChance;
+                zone = 'green';
+            } else if (pos >= config.yellowMin && pos <= config.yellowMax) {
+                successChance = config.yellowChance;
+                zone = 'yellow';
+            } else {
+                successChance = config.redChance;
+                zone = 'red';
+            }
+
+            const success = Math.random() < successChance;
+
+            document.getElementById(`meter-${team}`).style.display = 'none';
+
+            const cup = document.getElementById(`cup-${team}`);
+            const result = document.getElementById(`result-${team}`);
+
+            if (success) {
+                cup.className = 'cup flipped';
+                result.textContent = 'LANDED!';
+                result.className = 'result-flash success';
+
+                // Determine feedback type
+                if (t.attempts >= 4) {
+                    showFeedback(team, 'clutch');
+                } else if (zone === 'sweet') {
+                    showFeedback(team, 'perfect');
+                } else if (zone === 'green') {
+                    showFeedback(team, 'clean');
+                } else if (zone === 'yellow') {
+                    showFeedback(team, 'sloppy');
+                } else {
+                    showFeedback(team, 'lucky');
+                }
+
+                t.flips++;
+                t.combo++;
+                if (t.combo > t.bestCombo) t.bestCombo = t.combo;
+
+                if (game.mode === 'speed') {
+                    game.globalCombo++;
+                    if (game.globalCombo > game.globalBestCombo) game.globalBestCombo = game.globalCombo;
+                }
+
+                setTimeout(() => {
+                    progressPlayer(team);
+                }, 1200);
+            } else {
+                cup.className = 'cup fallen';
+                result.textContent = 'MISS!';
+                result.className = 'result-flash fail';
+
+                t.combo = 0;
+                if (game.mode === 'speed') game.globalCombo = 0;
+
+                // Feedback based on zone
+                if (zone === 'green' || zone === 'sweet') {
+                    showFeedback(team, 'choke');
+                } else if (t.attempts >= 3) {
+                    showFeedback(team, 'pathetic');
+                }
+
+                // Check for sudden death elimination
+                if (game.mode === 'sudden') {
+                    setTimeout(() => {
+                        eliminatePlayer(team);
+                    }, 1000);
+                    return;
+                }
+
+                // Check mercy rule
+                if (t.attempts >= config.maxAttempts) {
+                    setTimeout(() => {
+                        result.textContent = 'MERCY!';
+                        cup.className = 'cup flipped';
+                        showFeedback(team, 'pathetic');
+                        t.flips++;
+                        setTimeout(() => progressPlayer(team), 800);
+                    }, 800);
+                } else {
+                    setTimeout(() => {
+                        cup.className = 'cup on-edge';
+                        result.textContent = '';
+                        t.phase = 'flip';
+                        t.meterPos = 50;
+                        t.meterDir = Math.random() > 0.5 ? 1 : -1;
+                        document.getElementById(`meter-${team}`).style.display = 'block';
+                        updateAttempts(team, `Attempt ${t.attempts + 1}/${config.maxAttempts}`);
+                    }, 1000);
+                }
+            }
+        }
+
+        function progressPlayer(team) {
+            const t = game.teams[team];
+            const count = team === 'a' ? game.teamACount : game.teamBCount;
+
+            t.currentFlip++;
+
+            // Speed mode - just keep flipping
+            if (game.mode === 'speed') {
+                document.getElementById(`flips-${team}`).textContent = `FLIPS: ${t.flips}`;
+                setTimeout(() => startDrinkPhase(team), 500);
+                return;
+            }
+
+            // Classic mode - check if player completed their flips
+            if (game.mode === 'classic') {
+                if (t.currentFlip >= config.flipsPerPlayer) {
+                    // Move to next player
+                    document.getElementById(`dot-${team}-${t.progress}`).classList.remove('active');
+                    document.getElementById(`dot-${team}-${t.progress}`).classList.add('done');
+                    t.progress++;
+                    t.currentFlip = 0;
+
+                    if (t.progress >= count) {
+                        endGame(team);
+                        return;
+                    }
+
+                    document.getElementById(`dot-${team}-${t.progress}`).classList.add('active');
+                }
+
+                setTimeout(() => startDrinkPhase(team), 800);
+                return;
+            }
+
+            // Sudden death mode
+            if (game.mode === 'sudden') {
+                document.getElementById(`dot-${team}-${t.progress}`).classList.remove('active');
+                document.getElementById(`dot-${team}-${t.progress}`).classList.add('done');
+                t.progress++;
+
+                if (t.progress >= count) {
+                    // All players done - team wins!
+                    endGame(team);
+                    return;
+                }
+
+                document.getElementById(`dot-${team}-${t.progress}`).classList.add('active');
+                setTimeout(() => startDrinkPhase(team), 800);
+            }
+        }
+
+        function eliminatePlayer(team) {
+            const t = game.teams[team];
+            const count = team === 'a' ? game.teamACount : game.teamBCount;
+
+            document.getElementById(`dot-${team}-${t.progress}`).classList.remove('active');
+            document.getElementById(`dot-${team}-${t.progress}`).classList.add('eliminated');
+
+            t.progress++;
+
+            if (t.progress >= count) {
+                // All eliminated - other team wins
+                t.eliminated = true;
+                updateStatus(team, 'ELIMINATED', '');
+                const otherTeam = team === 'a' ? 'b' : 'a';
+
+                // Check if other team is also eliminated
+                if (game.teams[otherTeam].eliminated) {
+                    // Draw? Shouldn't happen but handle it
+                    endGame();
+                } else {
+                    // Check if other team has finished
+                    const otherCount = otherTeam === 'a' ? game.teamACount : game.teamBCount;
+                    if (game.teams[otherTeam].progress >= otherCount) {
+                        endGame(otherTeam);
+                    }
+                    // Otherwise let the other team continue
+                }
+                return;
+            }
+
+            document.getElementById(`dot-${team}-${t.progress}`).classList.add('active');
+            setTimeout(() => startDrinkPhase(team), 800);
+        }
+
+        function endGame(winner) {
+            game.started = false;
+
+            const winScreen = document.getElementById('win-screen');
+            const winnerText = document.getElementById('winner-text');
+            const loserText = document.getElementById('loser-text');
+
+            if (game.mode === 'speed') {
+                // Determine winner by flips
+                const aFlips = game.teams.a.flips;
+                const bFlips = game.teams.b.flips;
+
+                if (aFlips > bFlips) {
+                    winnerText.textContent = 'TEAM A WINS!';
+                    winnerText.className = 'winner-text team-a';
+                    loserText.textContent = `${aFlips} vs ${bFlips} FLIPS`;
+                } else if (bFlips > aFlips) {
+                    winnerText.textContent = 'TEAM B WINS!';
+                    winnerText.className = 'winner-text team-b';
+                    loserText.textContent = `${bFlips} vs ${aFlips} FLIPS`;
+                } else {
+                    winnerText.textContent = 'TIE GAME!';
+                    winnerText.className = 'winner-text';
+                    loserText.textContent = `BOTH GOT ${aFlips} FLIPS`;
+                }
+
+                document.getElementById('stat-flips').textContent = aFlips + bFlips;
+                document.getElementById('stat-combo').textContent = game.globalBestCombo;
+            } else if (winner) {
+                winnerText.textContent = winner === 'a' ? 'TEAM A WINS!' : 'TEAM B WINS!';
+                winnerText.className = 'winner-text team-' + winner;
+                loserText.textContent = game.mode === 'sudden' ? 'SURVIVORS!' : 'LOSERS DRINK!';
+
+                document.getElementById('stat-flips').textContent = game.teams.a.flips + game.teams.b.flips;
+                document.getElementById('stat-combo').textContent = Math.max(game.teams.a.bestCombo, game.teams.b.bestCombo);
+            }
+
+            winScreen.style.display = 'flex';
+        }
+
+        function resetGame() {
+            document.getElementById('win-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('setup-screen').style.display = 'flex';
+            document.getElementById('mode-timer').classList.add('hidden');
+            document.getElementById('combo-display').classList.add('hidden');
+
+            game.started = false;
+        }
+
+        // ============ MEDIAPIPE SETUP ============
+        const hands = new Hands({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+        });
+
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 0,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        hands.onResults(onHandResults);
+
+        async function setup() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 640, height: 480, facingMode: 'user' }
+                });
+                video.srcObject = stream;
+                previewVideo.srcObject = stream;
+                await new Promise(r => { video.onloadedmetadata = () => { video.play(); r(); }; });
+                previewVideo.play();
+
+                const cam = new Camera(video, {
+                    onFrame: async () => {
+                        await hands.send({ image: video });
+                    },
+                    width: 640,
+                    height: 480
+                });
+                await cam.start();
+
+                document.getElementById('loading').classList.add('hidden');
+            } catch (e) {
+                document.getElementById('loading').textContent = 'CAMERA ERROR: ' + e.message;
+            }
+        }
+
+        setup();
+    </script>
+</body>
+</html>
