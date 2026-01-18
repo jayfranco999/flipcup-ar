@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flip Cup AR - Chaos Edition</title>
+    <title>Flip Cup AR</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,9 +17,7 @@
         #webcam { position: absolute; opacity: 0; pointer-events: none; }
 
         /* Screen Shake */
-        .screen-shake {
-            animation: shake 0.3s ease-out;
-        }
+        .screen-shake { animation: shake 0.3s ease-out; }
         @keyframes shake {
             0%, 100% { transform: translate(0, 0); }
             20% { transform: translate(-10px, 5px); }
@@ -27,32 +25,21 @@
             60% { transform: translate(-5px, 10px); }
             80% { transform: translate(5px, -10px); }
         }
-        .screen-shake-big {
-            animation: shakeBig 0.5s ease-out;
-        }
+        .screen-shake-big { animation: shakeBig 0.5s ease-out; }
         @keyframes shakeBig {
             0%, 100% { transform: translate(0, 0); }
-            10% { transform: translate(-15px, 10px); }
-            20% { transform: translate(15px, -10px); }
-            30% { transform: translate(-20px, 5px); }
-            40% { transform: translate(20px, -5px); }
-            50% { transform: translate(-10px, 15px); }
-            60% { transform: translate(10px, -15px); }
-            70% { transform: translate(-15px, 10px); }
-            80% { transform: translate(15px, -10px); }
-            90% { transform: translate(-5px, 5px); }
+            25% { transform: translate(-15px, 10px); }
+            50% { transform: translate(15px, -10px); }
+            75% { transform: translate(-10px, 5px); }
         }
 
         /* Glitch Effect */
-        .glitch-effect {
-            animation: glitch 0.4s ease-out;
-        }
+        .glitch-effect { animation: glitch 0.4s ease-out; }
         @keyframes glitch {
             0% { filter: none; }
-            20% { filter: hue-rotate(90deg) saturate(2); transform: translate(3px, 0); }
-            40% { filter: hue-rotate(-90deg) saturate(2); transform: translate(-3px, 0); }
-            60% { filter: hue-rotate(180deg) brightness(1.5); transform: translate(2px, -2px); }
-            80% { filter: hue-rotate(-180deg) contrast(2); transform: translate(-2px, 2px); }
+            25% { filter: hue-rotate(90deg) saturate(2); transform: translate(3px, 0); }
+            50% { filter: hue-rotate(-90deg) saturate(2); transform: translate(-3px, 0); }
+            75% { filter: hue-rotate(180deg) brightness(1.5); transform: translate(2px, -2px); }
             100% { filter: none; transform: translate(0, 0); }
         }
 
@@ -62,109 +49,129 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: linear-gradient(180deg,
-                #0f0520 0%,
-                #1a0a3a 20%,
-                #2d1b4e 40%,
-                #ff6b9d 70%,
-                #ffa07a 85%,
-                #ffcc00 100%
+                #0a0015 0%,
+                #1a0a3a 30%,
+                #2d1b69 50%,
+                #4a2c7a 65%,
+                #1a0a3a 80%,
+                #0a0015 100%
             );
             overflow: hidden;
         }
 
+        /* Ambient glow orbs */
+        .vaporwave-bg::before {
+            content: '';
+            position: absolute;
+            top: 20%; left: 30%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, #ff00ff22 0%, transparent 70%);
+            animation: float1 8s ease-in-out infinite;
+        }
+        .vaporwave-bg::after {
+            content: '';
+            position: absolute;
+            top: 30%; right: 20%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #00ffff22 0%, transparent 70%);
+            animation: float2 10s ease-in-out infinite;
+        }
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -20px) scale(1.1); }
+        }
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, 30px) scale(1.15); }
+        }
+
+        /* Neon grid floor */
         .grid-container {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            perspective: 400px;
+            bottom: 0; left: 0;
+            width: 100%; height: 45%;
+            perspective: 500px;
             overflow: hidden;
         }
         .grid {
             position: absolute;
-            bottom: 0;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            bottom: 0; left: -50%;
+            width: 200%; height: 300%;
             background-image:
-                linear-gradient(to right, #ff00ff33 1px, transparent 1px),
-                linear-gradient(to bottom, #ff00ff33 1px, transparent 1px);
-            background-size: 60px 60px;
-            transform: rotateX(60deg);
-            animation: gridMove 2s linear infinite;
+                linear-gradient(to right, #ff00ff44 1px, transparent 1px),
+                linear-gradient(to bottom, #00ffff44 1px, transparent 1px);
+            background-size: 80px 80px;
+            transform: rotateX(70deg);
+            animation: gridMove 3s linear infinite;
+        }
+        .grid::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, transparent 0%, #0a001588 100%);
         }
         @keyframes gridMove {
-            0% { transform: rotateX(60deg) translateY(0); }
-            100% { transform: rotateX(60deg) translateY(60px); }
+            0% { transform: rotateX(70deg) translateY(0); }
+            100% { transform: rotateX(70deg) translateY(80px); }
         }
 
-        .sun {
+        /* Horizon glow */
+        .horizon-glow {
             position: absolute;
-            bottom: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(180deg, #ffcc00 0%, #ff6b6b 50%, #ff00ff 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 100px #ff6b6b, 0 0 200px #ff00ff55;
-        }
-        .sun-lines {
-            position: absolute;
-            bottom: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            height: 150px;
-            overflow: hidden;
-        }
-        .sun-line {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background: #1a0a2e;
+            bottom: 42%; left: 0;
+            width: 100%; height: 120px;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                #ff00ff33 30%,
+                #ff6b9d66 50%,
+                #ff00ff33 70%,
+                transparent 100%
+            );
+            filter: blur(20px);
         }
 
-        .neon-sign {
+        /* Stars */
+        .stars {
             position: absolute;
-            font-size: 14px;
-            text-shadow:
-                0 0 5px currentColor,
-                0 0 10px currentColor,
-                0 0 20px currentColor,
-                0 0 40px currentColor;
-            animation: flicker 3s infinite;
+            top: 0; left: 0;
+            width: 100%; height: 60%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #ff6b9d, transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 130px 80px, #00ffff, transparent),
+                radial-gradient(1px 1px at 160px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 200px 60px, #ff00ff, transparent),
+                radial-gradient(1px 1px at 250px 20px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 50px, #fff, transparent),
+                radial-gradient(1px 1px at 350px 70px, #00ffff, transparent),
+                radial-gradient(2px 2px at 400px 30px, #ff6b9d, transparent);
+            background-size: 400px 100px;
+            animation: twinkle 4s ease-in-out infinite;
         }
-        @keyframes flicker {
-            0%, 95%, 100% { opacity: 1; }
-            96%, 98% { opacity: 0.8; }
-            97% { opacity: 0.4; }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
-        .neon-left { top: 80px; left: 30px; color: #00ffff; }
-        .neon-right { top: 80px; right: 30px; color: #ff00ff; }
+
+        .sun, .sun-lines, .sun-line { display: none; }
 
         /* Confetti */
         .confetti-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 500;
             overflow: hidden;
         }
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             opacity: 0;
         }
-        .confetti.active {
-            animation: confettiFall 1.5s ease-out forwards;
-        }
+        .confetti.active { animation: confettiFall 1.5s ease-out forwards; }
         @keyframes confettiFall {
             0% { opacity: 1; transform: translateY(0) rotate(0deg); }
             100% { opacity: 0; transform: translateY(400px) rotate(720deg); }
@@ -173,50 +180,41 @@
         /* Drinking Prompt Overlay */
         #drinking-prompt {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 42px;
+            font-size: 48px;
             color: #ffcc00;
-            text-shadow:
-                0 0 20px #ffcc00,
-                0 0 40px #ff6600,
-                4px 4px 0 #000;
+            text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff6600, 4px 4px 0 #000;
             z-index: 600;
             opacity: 0;
             pointer-events: none;
             text-align: center;
             white-space: nowrap;
         }
-        #drinking-prompt.show {
-            animation: drinkPromptPop 2.5s ease-out forwards;
-        }
+        #drinking-prompt.show { animation: drinkPromptPop 2.5s ease-out forwards; }
         @keyframes drinkPromptPop {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
             15% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
             25% { transform: translate(-50%, -50%) scale(1); }
-            75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            75% { opacity: 1; }
             100% { opacity: 0; transform: translate(-50%, -60%) scale(0.8); }
         }
 
         /* Challenge Card */
         #challenge-card {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             background: linear-gradient(135deg, #1a0a3a, #2d1b4e);
             border: 4px solid #ff00ff;
-            padding: 30px 50px;
+            padding: 40px 60px;
             z-index: 550;
             opacity: 0;
             pointer-events: none;
             text-align: center;
             box-shadow: 0 0 50px #ff00ff88;
         }
-        #challenge-card.show {
-            animation: cardReveal 2s ease-out forwards;
-        }
+        #challenge-card.show { animation: cardReveal 2s ease-out forwards; }
         @keyframes cardReveal {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotateY(180deg); }
             30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotateY(0deg); }
@@ -224,339 +222,276 @@
             80% { opacity: 1; }
             100% { opacity: 0; }
         }
-        #challenge-card .card-title {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 15px;
-        }
-        #challenge-card .card-name {
-            font-size: 28px;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
-            margin-bottom: 10px;
-        }
-        #challenge-card .card-desc {
-            font-size: 12px;
-            color: #ff6b9d;
-        }
+        #challenge-card .card-title { font-size: 16px; color: #888; margin-bottom: 20px; }
+        #challenge-card .card-name { font-size: 36px; color: #00ffff; text-shadow: 0 0 20px #00ffff; margin-bottom: 15px; }
+        #challenge-card .card-desc { font-size: 14px; color: #ff6b9d; }
 
-        /* Callout Buttons */
-        #callout-ui {
+        /* ============ SCREENS ============ */
+        .screen {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             display: none;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 15px;
-            z-index: 400;
-        }
-        .callout-title {
-            font-size: 18px;
-            color: #fff;
-            text-shadow: 0 0 10px #00ffff;
-            margin-bottom: 10px;
-        }
-        .callout-buttons {
-            display: flex;
-            gap: 15px;
-        }
-        .callout-btn {
-            padding: 15px 25px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 14px;
-            border: 3px solid;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: rgba(0,0,0,0.8);
-        }
-        .callout-btn:hover {
-            transform: scale(1.1);
-        }
-        .callout-btn.perfect {
-            color: #00ff00;
-            border-color: #00ff00;
-            box-shadow: 0 0 20px #00ff0055;
-        }
-        .callout-btn.perfect:hover { box-shadow: 0 0 30px #00ff00aa; }
-        .callout-btn.clean {
-            color: #00ffaa;
-            border-color: #00ffaa;
-            box-shadow: 0 0 20px #00ffaa55;
-        }
-        .callout-btn.clean:hover { box-shadow: 0 0 30px #00ffffaa; }
-        .callout-btn.safe {
-            color: #888;
-            border-color: #888;
-        }
-        .callout-btn.safe:hover { box-shadow: 0 0 20px #88888855; }
-
-        .callout-indicator {
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 12px;
-            padding: 5px 15px;
-            border-radius: 5px;
-            display: none;
-        }
-        .callout-indicator.perfect {
-            background: #00ff00;
-            color: #000;
-        }
-        .callout-indicator.clean {
-            background: #00ffaa;
-            color: #000;
-        }
-
-        /* Webcam preview */
-        #webcam-area {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-        }
-        #webcam-preview {
-            width: 360px;
-            height: 270px;
-            border: 4px solid #00ffff;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 20px #00ffff55, 0 0 40px #ff00ff33;
-        }
-        #webcam-preview video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-
-        .hand-indicator {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 3px solid #fff;
-            pointer-events: none;
-            display: none;
-            transform: translate(-50%, -50%);
-        }
-        #hand-left { background: rgba(255, 107, 157, 0.8); box-shadow: 0 0 15px #ff6b9d; }
-        #hand-right { background: rgba(0, 255, 255, 0.8); box-shadow: 0 0 15px #00ffff; }
-
-        .gesture-label {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            color: #fff;
-            white-space: nowrap;
-            background: rgba(0,0,0,0.8);
-            padding: 2px 8px;
-            border-radius: 10px;
-            text-shadow: 0 0 5px #00ffff;
-        }
-
-        /* Setup Screen */
-        #setup-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 200;
         }
-        .title {
-            font-size: 64px;
+        .screen.active { display: flex; }
+
+        /* Landing Screen */
+        #landing-screen .title {
+            font-size: 80px;
             color: #00ffff;
-            margin-bottom: 5px;
-            text-shadow:
-                4px 4px 0 #ff00ff,
-                0 0 20px #00ffff,
-                0 0 40px #00ffff;
-            letter-spacing: 8px;
+            margin-bottom: 10px;
+            text-shadow: 6px 6px 0 #ff00ff, 0 0 30px #00ffff, 0 0 60px #00ffff;
+            letter-spacing: 10px;
         }
-        .subtitle {
-            font-size: 18px;
+        #landing-screen .tagline {
+            font-size: 16px;
             color: #ff6b9d;
-            margin-bottom: 30px;
+            margin-bottom: 80px;
             text-shadow: 0 0 10px #ff6b9d;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
         }
-
-        .instructions {
-            background: rgba(0,0,0,0.85);
-            border: 2px solid #ff00ff;
-            padding: 20px 40px;
-            margin-bottom: 25px;
-            text-align: center;
-            box-shadow: 0 0 20px #ff00ff55;
-        }
-        .instructions p {
+        .big-btn {
+            padding: 25px 80px;
+            font-size: 24px;
+            background: linear-gradient(180deg, #ff00ff, #ff6b9d);
             color: #fff;
-            font-size: 12px;
-            margin: 10px 0;
-            line-height: 1.8;
+            border: none;
+            cursor: pointer;
+            text-shadow: 3px 3px 0 #000;
+            box-shadow: 0 0 40px #ff00ff55;
+            font-family: 'Press Start 2P', monospace;
         }
-        .instructions .highlight { color: #00ffff; }
+        .big-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 60px #ff00ff88;
+        }
 
-        /* Mode Selection */
+        /* Instructions Screen */
+        #instructions-screen .section-title {
+            font-size: 32px;
+            color: #00ffff;
+            margin-bottom: 60px;
+            text-shadow: 0 0 20px #00ffff;
+        }
+        .instruction-steps {
+            display: flex;
+            gap: 80px;
+            margin-bottom: 60px;
+        }
+        .step-box {
+            text-align: center;
+            width: 200px;
+        }
+        .step-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: rgba(0,0,0,0.6);
+            border: 3px solid #ff00ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+        .step-text {
+            font-size: 14px;
+            color: #fff;
+            line-height: 1.6;
+        }
+        .step-text .highlight { color: #00ffff; }
+
+        /* Setup Screen */
+        #setup-screen .section-title {
+            font-size: 28px;
+            color: #00ffff;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #00ffff;
+        }
         .mode-select {
             display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
         }
         .mode-btn {
-            padding: 18px 20px;
+            padding: 30px 40px;
             background: rgba(0,0,0,0.8);
-            border: 3px solid #444;
+            border: 4px solid #444;
             color: #888;
             cursor: pointer;
-            transition: all 0.3s;
-            min-width: 140px;
+            min-width: 220px;
             text-align: center;
         }
         .mode-btn:hover, .mode-btn.selected {
             border-color: #00ffff;
             color: #00ffff;
-            box-shadow: 0 0 20px #00ffff55;
+            box-shadow: 0 0 30px #00ffff55;
         }
         .mode-btn.chaos-btn {
             border-color: #ff00ff;
             background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(0,255,255,0.2));
-            animation: chaosPulse 2s infinite;
         }
         .mode-btn.chaos-btn:hover, .mode-btn.chaos-btn.selected {
             border-color: #ff00ff;
             color: #ff00ff;
-            box-shadow: 0 0 30px #ff00ff88;
+            box-shadow: 0 0 40px #ff00ff88;
         }
-        @keyframes chaosPulse {
-            0%, 100% { box-shadow: 0 0 10px #ff00ff55; }
-            50% { box-shadow: 0 0 25px #ff00ff88, 0 0 40px #00ffff44; }
-        }
-        .mode-btn .mode-name {
-            font-size: 12px;
-            margin-bottom: 8px;
-        }
-        .mode-btn .mode-desc {
-            font-size: 7px;
-            color: #ff6b9d;
-            line-height: 1.6;
-        }
+        .mode-btn .mode-name { font-size: 18px; margin-bottom: 12px; }
+        .mode-btn .mode-desc { font-size: 10px; color: #ff6b9d; line-height: 1.8; }
 
-        .team-setup { display: flex; gap: 50px; margin-bottom: 25px; }
+        .team-setup { display: flex; gap: 60px; margin-bottom: 50px; }
         .team-box {
             text-align: center;
             background: rgba(0,0,0,0.8);
-            padding: 20px 35px;
-            border: 2px solid #333;
+            padding: 30px 50px;
+            border: 3px solid #333;
         }
-        .team-box.team-a { border-color: #ff6b9d; box-shadow: 0 0 15px #ff6b9d33; }
-        .team-box.team-b { border-color: #00ffff; box-shadow: 0 0 15px #00ffff33; }
-        .team-label { font-size: 18px; color: #fff; margin-bottom: 12px; }
-        .team-a .team-label { color: #ff6b9d; text-shadow: 0 0 10px #ff6b9d; }
-        .team-b .team-label { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
-
-        .player-count { display: flex; align-items: center; gap: 12px; }
+        .team-box.team-a { border-color: #ff6b9d; box-shadow: 0 0 20px #ff6b9d33; }
+        .team-box.team-b { border-color: #00ffff; box-shadow: 0 0 20px #00ffff33; }
+        .team-label { font-size: 20px; color: #fff; margin-bottom: 15px; }
+        .team-a .team-label { color: #ff6b9d; text-shadow: 0 0 15px #ff6b9d; }
+        .team-b .team-label { color: #00ffff; text-shadow: 0 0 15px #00ffff; }
+        .player-count { display: flex; align-items: center; gap: 15px; }
         .player-count button {
-            width: 35px; height: 35px; font-size: 18px; border: none;
+            width: 45px; height: 45px; font-size: 24px; border: none;
             background: #333; color: #fff; cursor: pointer;
             font-family: 'Press Start 2P', monospace;
         }
         .player-count button:hover { background: #555; }
-        .player-count .count { font-size: 32px; color: #fff; width: 45px; text-align: center; }
+        .player-count .count { font-size: 40px; color: #fff; width: 60px; text-align: center; }
 
-        #start-btn {
-            padding: 18px 50px; font-size: 18px;
-            background: linear-gradient(180deg, #ff00ff, #ff6b9d);
-            color: #fff; border: none; cursor: pointer;
-            text-shadow: 2px 2px 0 #000;
-            box-shadow: 0 0 30px #ff00ff55;
-            transition: all 0.2s;
-            font-family: 'Press Start 2P', monospace;
+        .position-hint {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 30px;
+            max-width: 500px;
+            text-align: center;
+            line-height: 1.8;
         }
-        #start-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 50px #ff00ff88;
-        }
+        .position-hint .highlight { color: #ffcc00; }
 
-        /* Game Screen */
+        /* ============ GAME SCREEN ============ */
         #game-screen {
             display: none;
             width: 100%;
             height: 100%;
         }
+        #game-screen.active { display: block; }
 
-        .split-screen { display: flex; width: 100%; height: calc(100% - 310px); }
+        .game-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            z-index: 10;
+        }
+        .mode-timer {
+            font-size: 48px;
+            color: #00ffff;
+            text-shadow: 0 0 30px #00ffff;
+        }
+        .mode-timer.warning { color: #ff6600; text-shadow: 0 0 30px #ff6600; }
+        .combo-display {
+            font-size: 24px;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+        }
+
+        .split-screen {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
         .team-side {
-            flex: 1; display: flex; flex-direction: column; align-items: center;
-            padding: 15px; position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            position: relative;
         }
-        .team-side.team-a { border-right: 3px solid #ff00ff55; }
+        .team-side.team-a { border-right: 4px solid #ff00ff55; }
 
-        .team-header {
-            font-size: 24px; font-weight: bold; margin-bottom: 8px;
-        }
-        .team-a .team-header { color: #ff6b9d; text-shadow: 0 0 20px #ff6b9d; }
-        .team-b .team-header { color: #00ffff; text-shadow: 0 0 20px #00ffff; }
+        .team-header { font-size: 32px; font-weight: bold; margin-bottom: 15px; }
+        .team-a .team-header { color: #ff6b9d; text-shadow: 0 0 25px #ff6b9d; }
+        .team-b .team-header { color: #00ffff; text-shadow: 0 0 25px #00ffff; }
 
-        .player-indicators { display: flex; gap: 10px; margin-bottom: 12px; }
+        .player-indicators { display: flex; gap: 12px; margin-bottom: 20px; }
         .player-dot {
-            width: 28px; height: 28px; border-radius: 50%; background: #333;
-            border: 3px solid #666; transition: all 0.3s;
+            width: 35px; height: 35px; border-radius: 50%;
+            background: #333; border: 4px solid #666;
         }
-        .player-dot.done { background: #00ff00; border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
-        .player-dot.active {
-            background: #ffcc00;
-            border-color: #ffcc00;
-            animation: pulse 0.8s infinite;
-            box-shadow: 0 0 20px #ffcc00;
-        }
-        .player-dot.eliminated { background: #ff0000; border-color: #ff0000; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .player-dot.done { background: #00ff00; border-color: #00ff00; box-shadow: 0 0 20px #00ff00; }
+        .player-dot.active { background: #ffcc00; border-color: #ffcc00; box-shadow: 0 0 25px #ffcc00; }
 
         .game-area {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: flex-start;
-            width: 100%; padding-top: 5px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
         }
 
         .status-message {
-            font-size: 28px; font-weight: bold; color: #fff; text-align: center;
-            text-shadow: 0 0 20px currentColor; margin-bottom: 10px;
-            min-height: 45px;
+            font-size: 36px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            text-shadow: 0 0 25px currentColor;
+            margin-bottom: 15px;
+            min-height: 55px;
         }
         .status-message.drink { color: #ffcc00; }
         .status-message.ready { color: #00ffff; }
 
         .player-state {
-            font-size: 11px;
-            color: #fff;
-            background: rgba(0,0,0,0.6);
-            padding: 5px 12px;
-            margin-bottom: 8px;
+            font-size: 12px;
+            color: #ff6b9d;
+            background: transparent;
+            padding: 8px 20px;
+            margin-bottom: 12px;
+            border: 2px solid #ff6b9d44;
+            border-radius: 20px;
+            text-shadow: 0 0 10px #ff6b9d;
+            letter-spacing: 1px;
         }
-        .player-state.raised { background: #00aa00; box-shadow: 0 0 10px #00ff00; }
+        .player-state.raised {
+            color: #00ffff;
+            border-color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+            box-shadow: 0 0 20px #00ffff55;
+        }
 
-        /* Challenge indicator */
         .challenge-indicator {
-            font-size: 10px;
+            font-size: 12px;
             color: #ff00ff;
             background: rgba(0,0,0,0.8);
-            padding: 4px 12px;
-            margin-bottom: 8px;
-            border: 1px solid #ff00ff;
-            text-shadow: 0 0 5px #ff00ff;
+            padding: 6px 16px;
+            margin-bottom: 12px;
+            border: 2px solid #ff00ff;
+            text-shadow: 0 0 8px #ff00ff;
         }
 
         /* Shot Meter */
         .meter-container {
-            width: 90%; max-width: 300px; height: 32px; background: #111;
-            position: relative; overflow: hidden;
-            border: 3px solid #00ffff;
-            margin-bottom: 15px;
+            width: 90%;
+            max-width: 350px;
+            height: 40px;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #00ffff;
+            margin-bottom: 20px;
             display: none;
-            box-shadow: 0 0 15px #00ffff55;
+            box-shadow: 0 0 20px #00ffff55;
         }
         .meter-container.wobble {
             animation: meterWobble var(--wobble-speed, 0.5s) ease-in-out infinite;
@@ -566,198 +501,221 @@
             50% { transform: translateX(calc(var(--wobble-amount, 0px) * -1)) rotate(calc(var(--wobble-rotate, 0deg) * -1)); }
         }
         .meter-container.blindfold .meter-zones,
-        .meter-container.blindfold .meter-needle {
-            opacity: 0;
-        }
+        .meter-container.blindfold .meter-needle { opacity: 0; }
         .meter-container.blindfold::after {
             content: '???';
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 18px;
+            font-size: 22px;
             color: #ff00ff;
         }
 
         .meter-zones {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             display: flex;
-            transition: all 0.3s;
         }
-        .meter-zone { height: 100%; transition: flex 0.3s; }
-        .meter-zone.red-left { background: #aa0000; }
-        .meter-zone.yellow-left { background: #aa8800; }
-        .meter-zone.green { background: #00aa00; }
-        .meter-zone.sweet-spot { background: #00ff00; box-shadow: inset 0 0 10px #fff; }
-        .meter-zone.green-right { background: #00aa00; }
-        .meter-zone.yellow-right { background: #aa8800; }
-        .meter-zone.red-right { background: #aa0000; }
+        .meter-zone { height: 100%; }
+        .meter-zone.red-left { background: #aa0000; flex: 2; }
+        .meter-zone.yellow-left { background: #aa8800; flex: 1.5; }
+        .meter-zone.green { background: #00aa00; flex: 1.25; }
+        .meter-zone.sweet-spot { background: #00ff00; flex: 0.5; box-shadow: inset 0 0 15px #fff; }
+        .meter-zone.green-right { background: #00aa00; flex: 1.25; }
+        .meter-zone.yellow-right { background: #aa8800; flex: 1.5; }
+        .meter-zone.red-right { background: #aa0000; flex: 2; }
 
         .meter-needle {
-            position: absolute; top: -5px; bottom: -5px; width: 6px;
-            background: #fff; border: 2px solid #000;
+            position: absolute;
+            top: -6px; bottom: -6px;
+            width: 8px;
+            background: #fff;
+            border: 2px solid #000;
             transform: translateX(-50%);
-            box-shadow: 0 0 10px #fff;
+            box-shadow: 0 0 15px #fff;
         }
 
         /* Cup Area */
         .cup-area {
             width: 100%;
-            max-width: 260px;
-            height: 140px;
+            max-width: 300px;
+            height: 180px;
             position: relative;
         }
-
         .bar-surface {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 32px;
+            bottom: 0; left: 0;
+            width: 100%; height: 40px;
             background: linear-gradient(180deg, #4a3728 0%, #2a1a10 100%);
-            border: 3px solid #1a0a05;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 4px solid #1a0a05;
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
         }
-
         .cup {
             position: absolute;
-            bottom: 28px;
-            left: 50%;
-            width: 45px;
-            height: 65px;
+            bottom: 35px; left: 50%;
+            width: 60px; height: 85px;
             transform: translateX(-50%);
             transition: transform 0.3s ease;
         }
-
         .cup-body { fill: #ff0044; stroke: #aa0033; stroke-width: 2; }
         .cup-rim { fill: #ff3366; }
         .cup-shine { fill: rgba(255,255,255,0.3); }
         .cup-beer { fill: #ffaa00; }
-
-        .cup.on-edge { transform: translateX(-50%) translateX(30px); }
-        .cup.flipped { transform: translateX(-50%) rotate(180deg); bottom: 30px; }
-        .cup.fallen { transform: translateX(-50%) rotate(90deg) translateY(12px); bottom: 40px; }
+        .cup.on-edge { transform: translateX(-50%) translateX(40px); }
+        .cup.flipped { transform: translateX(-50%) rotate(180deg); bottom: 38px; }
+        .cup.fallen { transform: translateX(-50%) rotate(90deg) translateY(15px); bottom: 50px; }
 
         /* Feedback Flash */
         .feedback-flash {
             position: absolute;
-            top: 45%;
-            left: 50%;
+            top: 45%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 42px;
+            font-size: 52px;
             font-weight: bold;
             pointer-events: none;
             opacity: 0;
             z-index: 50;
         }
-        .feedback-flash.show {
-            animation: feedbackPop 1.2s ease-out forwards;
-        }
+        .feedback-flash.show { animation: feedbackPop 1.2s ease-out forwards; }
         @keyframes feedbackPop {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
             20% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
             40% { transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
         }
-        .feedback-flash.perfect { color: #00ff00; text-shadow: 0 0 30px #00ff00, 0 0 60px #00ff00; }
-        .feedback-flash.clean { color: #00ffaa; text-shadow: 0 0 30px #00ffaa; }
-        .feedback-flash.sloppy { color: #ffaa00; text-shadow: 0 0 30px #ffaa00; }
-        .feedback-flash.lucky { color: #ff00ff; text-shadow: 0 0 30px #ff00ff; }
-        .feedback-flash.choke { color: #ff0000; text-shadow: 0 0 30px #ff0000; }
-        .feedback-flash.pathetic { color: #ff0044; text-shadow: 0 0 30px #ff0044; animation: feedbackShake 1.2s ease-out forwards; }
-        .feedback-flash.clutch { color: #ffcc00; text-shadow: 0 0 40px #ffcc00, 0 0 80px #ff6600; }
-
-        @keyframes feedbackShake {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(-5deg); }
-            30% { transform: translate(-50%, -50%) scale(1) rotate(5deg); }
-            40% { transform: translate(-50%, -50%) scale(1) rotate(-3deg); }
-            50% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-            100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
-        }
+        .feedback-flash.perfect { color: #00ff00; text-shadow: 0 0 40px #00ff00, 0 0 80px #00ff00; }
+        .feedback-flash.clean { color: #00ffaa; text-shadow: 0 0 40px #00ffaa; }
+        .feedback-flash.sloppy { color: #ffaa00; text-shadow: 0 0 40px #ffaa00; }
+        .feedback-flash.lucky { color: #ff00ff; text-shadow: 0 0 40px #ff00ff; }
+        .feedback-flash.choke { color: #ff0000; text-shadow: 0 0 40px #ff0000; }
+        .feedback-flash.pathetic { color: #ff0044; text-shadow: 0 0 40px #ff0044; }
+        .feedback-flash.clutch { color: #ffcc00; text-shadow: 0 0 50px #ffcc00, 0 0 100px #ff6600; }
 
         .result-flash {
-            font-size: 24px; font-weight: bold;
-            text-shadow: 0 0 15px currentColor;
-            min-height: 35px;
-            margin-top: 3px;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 0 20px currentColor;
+            min-height: 40px;
+            margin-top: 5px;
         }
         .result-flash.success { color: #00ff00; }
         .result-flash.fail { color: #ff0000; }
 
-        .attempt-counter {
-            font-size: 9px;
-            color: #aaa;
-            margin-top: 3px;
-        }
+        .attempt-counter { font-size: 11px; color: #aaa; margin-top: 5px; }
+        .flip-count { font-size: 14px; color: #ffcc00; text-shadow: 0 0 15px #ffcc00; margin-top: 10px; }
 
-        .flip-count {
-            font-size: 12px;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-            margin-top: 8px;
-        }
-
-        /* Mode-specific UI */
-        .mode-timer {
+        /* Webcam Preview - Bottom Right */
+        #webcam-area {
             position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 32px;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
         }
-        .mode-timer.warning { color: #ff6600; text-shadow: 0 0 20px #ff6600; animation: timerPulse 0.5s infinite; }
-        @keyframes timerPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-
-        .combo-display {
+        #webcam-preview {
+            width: 320px;
+            height: 180px;
+            border: 4px solid #00ffff;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 25px #00ffff55, 0 0 50px #ff00ff33;
+        }
+        #webcam-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: scaleX(-1);
+            background: #000;
+        }
+        .zone-overlay {
             position: absolute;
-            top: 55px;
-            left: 50%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex;
+        }
+        .zone-left, .zone-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: rgba(255,255,255,0.3);
+        }
+        .zone-left { border-right: 2px dashed rgba(255,107,157,0.5); }
+        .zone-right { border-left: 2px dashed rgba(0,255,255,0.5); }
+        .hand-indicator {
+            position: absolute;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            pointer-events: none;
+            display: none;
+            transform: translate(-50%, -50%);
+        }
+        #hand-left { background: rgba(255, 107, 157, 0.8); box-shadow: 0 0 20px #ff6b9d; }
+        #hand-right { background: rgba(0, 255, 255, 0.8); box-shadow: 0 0 20px #00ffff; }
+        .gesture-label {
+            position: absolute;
+            bottom: -28px; left: 50%;
             transform: translateX(-50%);
-            font-size: 20px;
-            color: #ff00ff;
-            text-shadow: 0 0 15px #ff00ff;
+            font-size: 10px;
+            color: #fff;
+            white-space: nowrap;
+            background: rgba(0,0,0,0.9);
+            padding: 3px 10px;
+            border-radius: 10px;
         }
 
         /* Win Screen */
         #win-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); display: none; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 300;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
         }
-        .winner-text {
-            font-size: 48px; font-weight: bold; margin-bottom: 15px;
-        }
-        .winner-text.team-a { color: #ff6b9d; text-shadow: 0 0 40px #ff6b9d; }
-        .winner-text.team-b { color: #00ffff; text-shadow: 0 0 40px #00ffff; }
-        .loser-text { font-size: 20px; color: #ffcc00; margin-bottom: 30px; text-shadow: 0 0 15px #ffcc00; }
-
+        .winner-text { font-size: 56px; font-weight: bold; margin-bottom: 20px; }
+        .winner-text.team-a { color: #ff6b9d; text-shadow: 0 0 50px #ff6b9d; }
+        .winner-text.team-b { color: #00ffff; text-shadow: 0 0 50px #00ffff; }
+        .loser-text { font-size: 24px; color: #ffcc00; margin-bottom: 40px; text-shadow: 0 0 20px #ffcc00; }
         .final-stats {
             background: rgba(0,0,0,0.8);
-            border: 3px solid #ff00ff;
-            padding: 25px 40px;
-            margin-bottom: 25px;
+            border: 4px solid #ff00ff;
+            padding: 30px 50px;
+            margin-bottom: 30px;
             text-align: center;
         }
-        .stat-line { font-size: 12px; color: #fff; margin: 10px 0; }
+        .stat-line { font-size: 14px; color: #fff; margin: 12px 0; }
         .stat-value { color: #00ffff; }
-
         #play-again-btn {
-            padding: 18px 45px; font-size: 16px;
+            padding: 20px 50px;
+            font-size: 18px;
             background: linear-gradient(180deg, #00ffff, #0088aa);
-            color: #000; border: none; cursor: pointer;
+            color: #000;
+            border: none;
+            cursor: pointer;
             font-family: 'Press Start 2P', monospace;
-            box-shadow: 0 0 30px #00ffff55;
+            box-shadow: 0 0 40px #00ffff55;
         }
 
         #loading {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 14px; color: #00ffff; z-index: 400; background: #0a0015;
-            padding: 25px 40px; border: 3px solid #ff00ff;
-            text-shadow: 0 0 10px #00ffff;
-            box-shadow: 0 0 30px #ff00ff55;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #00ffff;
+            z-index: 400;
+            background: #0a0015;
+            padding: 30px 50px;
+            border: 4px solid #ff00ff;
+            text-shadow: 0 0 15px #00ffff;
+            box-shadow: 0 0 40px #ff00ff55;
         }
         .hidden { display: none !important; }
     </style>
@@ -768,23 +726,12 @@
 
         <!-- Vaporwave Background -->
         <div class="vaporwave-bg">
-            <div class="sun"></div>
-            <div class="sun-lines">
-                <div class="sun-line" style="top: 20%"></div>
-                <div class="sun-line" style="top: 35%"></div>
-                <div class="sun-line" style="top: 48%"></div>
-                <div class="sun-line" style="top: 60%"></div>
-                <div class="sun-line" style="top: 72%"></div>
-                <div class="sun-line" style="top: 82%"></div>
-                <div class="sun-line" style="top: 90%"></div>
-            </div>
+            <div class="stars"></div>
+            <div class="horizon-glow"></div>
             <div class="grid-container">
                 <div class="grid"></div>
             </div>
         </div>
-
-        <div class="neon-sign neon-left">TEAM A</div>
-        <div class="neon-sign neon-right">TEAM B</div>
 
         <!-- Confetti Container -->
         <div class="confetti-container" id="confetti-container"></div>
@@ -799,29 +746,54 @@
             <div class="card-desc" id="card-desc">Meter is hidden!</div>
         </div>
 
-        <!-- Setup Screen -->
-        <div id="setup-screen">
+        <!-- ============ LANDING SCREEN ============ -->
+        <div id="landing-screen" class="screen active">
             <div class="title">FLIP CUP</div>
-            <div class="subtitle">CHAOS EDITION</div>
+            <div class="tagline">you're gonna embarrass yourself</div>
+            <button class="big-btn" onclick="showScreen('instructions')">START</button>
+        </div>
 
-            <div class="instructions">
-                <p><span class="highlight">1.</span> DRINK YOUR CUP IRL</p>
-                <p><span class="highlight">2.</span> RAISE HAND WHEN READY</p>
-                <p><span class="highlight">3.</span> FLICK UP ON THE BEAT</p>
+        <!-- ============ INSTRUCTIONS SCREEN ============ -->
+        <div id="instructions-screen" class="screen">
+            <div class="section-title">HOW TO PLAY</div>
+            <div class="instruction-steps">
+                <div class="step-box">
+                    <div class="step-icon">🍺</div>
+                    <div class="step-text"><span class="highlight">1.</span> DRINK YOUR CUP<br>(for real)</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-icon">✋</div>
+                    <div class="step-text"><span class="highlight">2.</span> RAISE HAND<br>(when ready)</div>
+                </div>
+                <div class="step-box">
+                    <div class="step-icon">
+                        <svg viewBox="0 0 64 64" width="60" height="60">
+                            <!-- Open palm facing up -->
+                            <path d="M32,58 C22,58 16,52 16,44 L16,32 C16,28 18,26 22,26 L22,22 C22,19 24,17 27,17 C27,14 29,12 32,12 C35,12 37,14 37,17 C40,17 42,19 42,22 L42,26 C46,26 48,28 48,32 L48,44 C48,52 42,58 32,58 Z"
+                                  fill="#00ffff" stroke="#fff" stroke-width="2"/>
+                            <!-- Finger lines -->
+                            <line x1="27" y1="26" x2="27" y2="38" stroke="#0088aa" stroke-width="1.5" stroke-linecap="round"/>
+                            <line x1="32" y1="22" x2="32" y2="38" stroke="#0088aa" stroke-width="1.5" stroke-linecap="round"/>
+                            <line x1="37" y1="26" x2="37" y2="38" stroke="#0088aa" stroke-width="1.5" stroke-linecap="round"/>
+                            <!-- Upward arrow -->
+                            <path d="M32,2 L38,10 L34,10 L34,18 L30,18 L30,10 L26,10 Z"
+                                  fill="#ff00ff" stroke="#fff" stroke-width="1"/>
+                        </svg>
+                    </div>
+                    <div class="step-text"><span class="highlight">3.</span> FLICK UP<br>(hit the sweet spot)</div>
+                </div>
             </div>
+            <button class="big-btn" onclick="showScreen('setup')">GOT IT</button>
+        </div>
+
+        <!-- ============ SETUP SCREEN ============ -->
+        <div id="setup-screen" class="screen">
+            <div class="section-title">PICK YOUR POISON</div>
 
             <div class="mode-select">
                 <button class="mode-btn selected" data-mode="classic">
                     <div class="mode-name">CLASSIC</div>
                     <div class="mode-desc">RELAY RACE<br>5 FLIPS EACH</div>
-                </button>
-                <button class="mode-btn" data-mode="sudden">
-                    <div class="mode-name">SUDDEN DEATH</div>
-                    <div class="mode-desc">MISS = OUT<br>LAST STANDING</div>
-                </button>
-                <button class="mode-btn" data-mode="speed">
-                    <div class="mode-name">SPEED DEMON</div>
-                    <div class="mode-desc">60 SECONDS<br>MOST FLIPS</div>
                 </button>
                 <button class="mode-btn chaos-btn" data-mode="chaos">
                     <div class="mode-name">CHAOS</div>
@@ -848,22 +820,19 @@
                 </div>
             </div>
 
-            <button id="start-btn" onclick="startGame()">START</button>
+            <div class="position-hint">
+                <span class="highlight">TEAM A</span> stand on LEFT side of camera<br>
+                <span class="highlight">TEAM B</span> stand on RIGHT side of camera
+            </div>
+
+            <button class="big-btn" onclick="startGame()">LET'S GO</button>
         </div>
 
-        <!-- Game Screen -->
+        <!-- ============ GAME SCREEN ============ -->
         <div id="game-screen">
-            <div class="mode-timer hidden" id="mode-timer">60</div>
-            <div class="combo-display hidden" id="combo-display">0x COMBO</div>
-
-            <!-- Callout UI (for CHAOS mode) -->
-            <div id="callout-ui">
-                <div class="callout-title">CALL YOUR SHOT!</div>
-                <div class="callout-buttons">
-                    <button class="callout-btn perfect" onclick="makeCallout('a', 'perfect')">PERFECT</button>
-                    <button class="callout-btn clean" onclick="makeCallout('a', 'clean')">CLEAN</button>
-                    <button class="callout-btn safe" onclick="makeCallout('a', 'safe')">SAFE</button>
-                </div>
+            <div class="game-header hidden" id="game-header">
+                <div class="mode-timer" id="mode-timer">60</div>
+                <div class="combo-display" id="combo-display"></div>
             </div>
 
             <div class="split-screen">
@@ -875,26 +844,25 @@
                         <div class="status-message" id="status-a"></div>
                         <div class="challenge-indicator hidden" id="challenge-a"></div>
                         <div class="player-state" id="state-a">Waiting...</div>
-                        <div class="callout-indicator" id="callout-a"></div>
                         <div class="meter-container" id="meter-a">
                             <div class="meter-zones" id="zones-a">
-                                <div class="meter-zone red-left" style="flex: 2"></div>
-                                <div class="meter-zone yellow-left" style="flex: 1.5"></div>
-                                <div class="meter-zone green" style="flex: 1.25"></div>
-                                <div class="meter-zone sweet-spot" style="flex: 0.5"></div>
-                                <div class="meter-zone green-right" style="flex: 1.25"></div>
-                                <div class="meter-zone yellow-right" style="flex: 1.5"></div>
-                                <div class="meter-zone red-right" style="flex: 2"></div>
+                                <div class="meter-zone red-left"></div>
+                                <div class="meter-zone yellow-left"></div>
+                                <div class="meter-zone green"></div>
+                                <div class="meter-zone sweet-spot"></div>
+                                <div class="meter-zone green-right"></div>
+                                <div class="meter-zone yellow-right"></div>
+                                <div class="meter-zone red-right"></div>
                             </div>
                             <div class="meter-needle" id="needle-a" style="left: 50%"></div>
                         </div>
                         <div class="cup-area">
                             <div class="cup" id="cup-a">
-                                <svg viewBox="0 0 45 65" width="45" height="65">
-                                    <path class="cup-body" d="M5,5 L40,5 L36,58 Q36,63 22.5,63 Q9,63 9,58 Z"/>
-                                    <rect class="cup-rim" x="3" y="0" width="39" height="7" rx="2"/>
-                                    <ellipse class="cup-beer" cx="22.5" cy="18" rx="13" ry="7"/>
-                                    <ellipse class="cup-shine" cx="14" cy="14" rx="5" ry="3"/>
+                                <svg viewBox="0 0 60 85" width="60" height="85">
+                                    <path class="cup-body" d="M6,6 L54,6 L48,76 Q48,82 30,82 Q12,82 12,76 Z"/>
+                                    <rect class="cup-rim" x="4" y="0" width="52" height="9" rx="2"/>
+                                    <ellipse class="cup-beer" cx="30" cy="24" rx="17" ry="9"/>
+                                    <ellipse class="cup-shine" cx="19" cy="18" rx="6" ry="4"/>
                                 </svg>
                             </div>
                             <div class="bar-surface"></div>
@@ -914,26 +882,25 @@
                         <div class="status-message" id="status-b"></div>
                         <div class="challenge-indicator hidden" id="challenge-b"></div>
                         <div class="player-state" id="state-b">Waiting...</div>
-                        <div class="callout-indicator" id="callout-b"></div>
                         <div class="meter-container" id="meter-b">
                             <div class="meter-zones" id="zones-b">
-                                <div class="meter-zone red-left" style="flex: 2"></div>
-                                <div class="meter-zone yellow-left" style="flex: 1.5"></div>
-                                <div class="meter-zone green" style="flex: 1.25"></div>
-                                <div class="meter-zone sweet-spot" style="flex: 0.5"></div>
-                                <div class="meter-zone green-right" style="flex: 1.25"></div>
-                                <div class="meter-zone yellow-right" style="flex: 1.5"></div>
-                                <div class="meter-zone red-right" style="flex: 2"></div>
+                                <div class="meter-zone red-left"></div>
+                                <div class="meter-zone yellow-left"></div>
+                                <div class="meter-zone green"></div>
+                                <div class="meter-zone sweet-spot"></div>
+                                <div class="meter-zone green-right"></div>
+                                <div class="meter-zone yellow-right"></div>
+                                <div class="meter-zone red-right"></div>
                             </div>
                             <div class="meter-needle" id="needle-b" style="left: 50%"></div>
                         </div>
                         <div class="cup-area">
                             <div class="cup" id="cup-b">
-                                <svg viewBox="0 0 45 65" width="45" height="65">
-                                    <path class="cup-body" d="M5,5 L40,5 L36,58 Q36,63 22.5,63 Q9,63 9,58 Z"/>
-                                    <rect class="cup-rim" x="3" y="0" width="39" height="7" rx="2"/>
-                                    <ellipse class="cup-beer" cx="22.5" cy="18" rx="13" ry="7"/>
-                                    <ellipse class="cup-shine" cx="14" cy="14" rx="5" ry="3"/>
+                                <svg viewBox="0 0 60 85" width="60" height="85">
+                                    <path class="cup-body" d="M6,6 L54,6 L48,76 Q48,82 30,82 Q12,82 12,76 Z"/>
+                                    <rect class="cup-rim" x="4" y="0" width="52" height="9" rx="2"/>
+                                    <ellipse class="cup-beer" cx="30" cy="24" rx="17" ry="9"/>
+                                    <ellipse class="cup-shine" cx="19" cy="18" rx="6" ry="4"/>
                                 </svg>
                             </div>
                             <div class="bar-surface"></div>
@@ -946,10 +913,14 @@
                 </div>
             </div>
 
-            <!-- Webcam Area -->
+            <!-- Webcam Area - Bottom Right -->
             <div id="webcam-area">
                 <div id="webcam-preview">
                     <video id="preview-video" autoplay playsinline muted></video>
+                    <div class="zone-overlay">
+                        <div class="zone-left">A</div>
+                        <div class="zone-right">B</div>
+                    </div>
                     <div class="hand-indicator" id="hand-left">
                         <span class="gesture-label" id="gesture-left"></span>
                     </div>
@@ -982,6 +953,13 @@
         const video = document.getElementById('webcam');
         const previewVideo = document.getElementById('preview-video');
 
+        // ============ SCREEN NAVIGATION ============
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId + '-screen');
+            if (target) target.classList.add('active');
+        }
+
         // ============ CHALLENGE CARDS ============
         const challengeCards = {
             blindfold: { name: 'BLINDFOLD', desc: 'Meter is hidden!', effect: 'blindfold' },
@@ -995,12 +973,12 @@
 
         // ============ DRINKING RULES ============
         const drinkingPrompts = {
-            chokeTax: "CHOKE TAX! 🍺",
-            mercyShame: "MERCY SHAME! 🍺🍺",
-            comboBreaker: "COMBO BREAKER! 🍺",
-            luckyBastard: "LUCKY! THEY DRINK! 🍺",
-            patheticTax: "PATHETIC TAX! 🍺🍺",
-            wrongCallout: "WRONG CALL! 🍺",
+            chokeTax: "CHOKE TAX!",
+            mercyShame: "MERCY SHAME!",
+            comboBreaker: "COMBO BREAKER!",
+            luckyBastard: "LUCKY! THEY DRINK!",
+            patheticTax: "PATHETIC TAX!",
+            wrongCallout: "WRONG CALL!",
             perfectBonus: "CALLED IT! +500"
         };
 
@@ -1013,28 +991,8 @@
                 wobbleEnabled: false,
                 shrinkingZones: false,
                 challengeCards: false,
-                calloutSystem: false,
-                maxAttempts: 5
-            },
-            sudden: {
-                flipsPerPlayer: 1,
-                baseMeterSpeed: 1.3,
-                meterSpeedIncrease: 0.1,
-                wobbleEnabled: false,
-                shrinkingZones: false,
-                challengeCards: false,
-                calloutSystem: false,
-                maxAttempts: 1
-            },
-            speed: {
-                flipsPerPlayer: 999,
-                baseMeterSpeed: 1.4,
-                meterSpeedIncrease: 0,
-                wobbleEnabled: false,
-                shrinkingZones: false,
-                challengeCards: false,
-                calloutSystem: false,
-                maxAttempts: 3
+                maxAttempts: 5,
+                timed: false
             },
             chaos: {
                 flipsPerPlayer: 3,
@@ -1046,23 +1004,18 @@
                 shrinkingZones: true,
                 shrinkFactor: 0.12,
                 challengeCards: true,
-                calloutSystem: true,
-                maxAttempts: 3
+                maxAttempts: 3,
+                timed: true,
+                timeLimit: 60
             }
         };
 
-        // Zone config
+        // Zone config - sweet spot is guaranteed success
         const zoneConfig = {
-            sweetSpotMin: 47.5,
-            sweetSpotMax: 52.5,
-            greenMin: 35,
-            greenMax: 65,
-            yellowMin: 20,
-            yellowMax: 80,
-            sweetSpotChance: 0.95,
-            greenChance: 0.70,
-            yellowChance: 0.35,
-            redChance: 0.10
+            sweetSpotChance: 1.0,
+            greenChance: 0.75,
+            yellowChance: 0.40,
+            redChance: 0.15
         };
 
         // ============ GAME STATE ============
@@ -1071,10 +1024,7 @@
             config: configs.classic,
             teamACount: 2,
             teamBCount: 2,
-            teams: {
-                a: createTeamState(),
-                b: createTeamState()
-            },
+            teams: { a: createTeamState(), b: createTeamState() },
             started: false,
             timeLeft: 60,
             startTime: 0,
@@ -1082,10 +1032,7 @@
             globalBestCombo: 0,
             totalDrinks: 0,
             roundNumber: 0,
-            hands: {
-                left: { x: 0, y: 0, visible: false, gesture: '', lastY: 0 },
-                right: { x: 0, y: 0, visible: false, gesture: '', lastY: 0 }
-            }
+            trackedHands: { a: null, b: null } // Track specific hands per team
         };
 
         function createTeamState() {
@@ -1099,11 +1046,11 @@
                 flips: 0,
                 combo: 0,
                 bestCombo: 0,
-                eliminated: false,
                 currentFlip: 0,
                 challengeCard: null,
-                callout: null,
-                reverseTimer: 0
+                reverseTimer: 0,
+                lastFlickY: 0,
+                lastFlickTime: 0  // Cooldown to prevent double-triggers
             };
         }
 
@@ -1157,7 +1104,7 @@
         function triggerScreenShake(big = false) {
             const container = document.getElementById('game-container');
             container.classList.remove('screen-shake', 'screen-shake-big');
-            void container.offsetWidth; // Force reflow
+            void container.offsetWidth;
             container.classList.add(big ? 'screen-shake-big' : 'screen-shake');
             setTimeout(() => container.classList.remove('screen-shake', 'screen-shake-big'), big ? 500 : 300);
         }
@@ -1200,7 +1147,6 @@
             if (promptKey !== 'perfectBonus') {
                 game.totalDrinks++;
             }
-
             setTimeout(() => el.classList.remove('show'), 2500);
         }
 
@@ -1214,7 +1160,6 @@
             void cardEl.offsetWidth;
             cardEl.classList.add('show');
 
-            // Show indicator on team side
             const indicator = document.getElementById(`challenge-${team}`);
             indicator.textContent = card.name;
             indicator.classList.remove('hidden');
@@ -1225,25 +1170,6 @@
             el.textContent = feedback[type];
             el.className = `feedback-flash ${type} show`;
             setTimeout(() => el.classList.remove('show'), 1200);
-        }
-
-        // ============ CALLOUT SYSTEM ============
-        function makeCallout(team, callType) {
-            game.teams[team].callout = callType;
-
-            const indicator = document.getElementById(`callout-${team}`);
-            if (callType !== 'safe') {
-                indicator.textContent = callType.toUpperCase() + '!';
-                indicator.className = `callout-indicator ${callType}`;
-                indicator.style.display = 'block';
-            } else {
-                indicator.style.display = 'none';
-            }
-
-            document.getElementById('callout-ui').style.display = 'none';
-
-            // Start the flip phase
-            startFlipPhase(team);
         }
 
         // ============ METER WOBBLE ============
@@ -1257,7 +1183,6 @@
             let wobbleSpeed = 0.4 - (game.roundNumber * 0.05);
             wobbleSpeed = Math.max(0.2, wobbleSpeed);
 
-            // Extra drunk card
             if (t.challengeCard === 'drunk') {
                 wobbleAmount *= 2;
                 wobbleSpeed *= 0.7;
@@ -1269,46 +1194,31 @@
             meter.classList.add('wobble');
         }
 
-        // ============ SHRINKING ZONES ============
-        function updateZoneSizes(team) {
-            if (!game.config.shrinkingZones) return;
-
-            const t = game.teams[team];
-            const shrink = 1 - (t.progress * game.config.shrinkFactor);
-
-            const zones = document.getElementById(`zones-${team}`);
-            const greenZones = zones.querySelectorAll('.green, .green-right');
-            const sweetSpot = zones.querySelector('.sweet-spot');
-
-            greenZones.forEach(z => z.style.flex = (1.25 * shrink));
-            sweetSpot.style.flex = (0.5 * shrink);
-        }
-
         // ============ GAME FLOW ============
         function startGame() {
-            document.getElementById('setup-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'block';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('game-screen').classList.add('active');
 
             game.config = configs[game.mode];
             game.teams.a = createTeamState();
             game.teams.b = createTeamState();
             game.started = true;
-            game.timeLeft = 60;
+            game.timeLeft = game.config.timeLimit || 60;
             game.startTime = Date.now();
             game.globalCombo = 0;
             game.globalBestCombo = 0;
             game.totalDrinks = 0;
             game.roundNumber = 0;
+            game.trackedHands = { a: null, b: null };
 
             createPlayerIndicators();
 
-            // Mode-specific setup
-            if (game.mode === 'speed' || game.mode === 'chaos') {
-                document.getElementById('mode-timer').classList.remove('hidden');
-                document.getElementById('combo-display').classList.remove('hidden');
+            // Show timer for chaos mode
+            const header = document.getElementById('game-header');
+            if (game.config.timed) {
+                header.classList.remove('hidden');
             } else {
-                document.getElementById('mode-timer').classList.add('hidden');
-                document.getElementById('combo-display').classList.add('hidden');
+                header.classList.add('hidden');
             }
 
             startDrinkPhase('a');
@@ -1320,29 +1230,20 @@
         function getMeterSpeed(team) {
             const t = game.teams[team];
             let speed = game.config.baseMeterSpeed + (t.progress * game.config.meterSpeedIncrease);
-
-            // Speed card doubles it
-            if (t.challengeCard === 'speed') {
-                speed *= 2;
-            }
-
+            if (t.challengeCard === 'speed') speed *= 2;
             return speed;
         }
 
         function startDrinkPhase(team) {
             const t = game.teams[team];
-            if (t.eliminated) return;
 
             t.phase = 'drink';
             t.handRaised = false;
             t.attempts = 0;
-            t.callout = null;
             t.challengeCard = null;
             t.reverseTimer = 0;
 
-            // Reset challenge indicator
             document.getElementById(`challenge-${team}`).classList.add('hidden');
-            document.getElementById(`callout-${team}`).style.display = 'none';
 
             updateStatus(team, 'DRINK & RAISE', 'drink');
             updateState(team, 'Raise hand when ready', '');
@@ -1357,21 +1258,18 @@
 
             document.getElementById(`result-${team}`).textContent = '';
 
-            // Update zone sizes for shrinking
-            updateZoneSizes(team);
-
-            // Update flip counter display
-            if (game.mode === 'speed' || game.mode === 'chaos') {
+            // Update flip counter
+            if (game.config.timed) {
                 document.getElementById(`flips-${team}`).textContent = `FLIPS: ${t.flips}`;
-            } else if (game.mode === 'classic') {
-                document.getElementById(`flips-${team}`).textContent = `${t.currentFlip}/${game.config.flipsPerPlayer}`;
             } else {
-                document.getElementById(`flips-${team}`).textContent = '';
+                document.getElementById(`flips-${team}`).textContent = `${t.currentFlip}/${game.config.flipsPerPlayer}`;
             }
         }
 
         function onHandRaised(team) {
             const t = game.teams[team];
+            if (t.handRaised) return;
+
             t.handRaised = true;
             updateState(team, 'READY!', 'raised');
 
@@ -1380,27 +1278,10 @@
                 const cardKey = cardKeys[Math.floor(Math.random() * cardKeys.length)];
                 t.challengeCard = challengeCards[cardKey].effect;
                 showChallengeCard(team, cardKey);
-
-                // Wait for card reveal then show callout or start
-                setTimeout(() => {
-                    if (game.config.calloutSystem) {
-                        showCalloutUI(team);
-                    } else {
-                        startFlipPhase(team);
-                    }
-                }, 2000);
-            } else if (game.config.calloutSystem) {
-                showCalloutUI(team);
+                setTimeout(() => startFlipPhase(team), 2000);
             } else {
                 startFlipPhase(team);
             }
-        }
-
-        function showCalloutUI(team) {
-            // For now, auto-assign safe callout for simplicity
-            // In full version, would show UI for that team
-            game.teams[team].callout = 'safe';
-            startFlipPhase(team);
         }
 
         function startFlipPhase(team) {
@@ -1430,7 +1311,6 @@
                 const meter = document.getElementById(`meter-${team}`);
                 meter.style.display = 'block';
 
-                // Apply challenge card effects
                 if (t.challengeCard === 'blindfold') {
                     meter.classList.add('blindfold');
                 }
@@ -1462,9 +1342,9 @@
         function gameLoop() {
             if (!game.started) return;
 
-            // Timer for speed/chaos modes
-            if (game.mode === 'speed' || game.mode === 'chaos') {
-                game.timeLeft = 60 - (Date.now() - game.startTime) / 1000;
+            // Timer for chaos mode
+            if (game.config.timed) {
+                game.timeLeft = game.config.timeLimit - (Date.now() - game.startTime) / 1000;
                 const timerEl = document.getElementById('mode-timer');
                 timerEl.textContent = Math.ceil(Math.max(0, game.timeLeft));
                 timerEl.className = game.timeLeft < 10 ? 'mode-timer warning' : 'mode-timer';
@@ -1484,7 +1364,6 @@
                     const speed = getMeterSpeed(team);
                     t.meterPos += t.meterDir * speed;
 
-                    // Reverse card - random direction changes
                     if (t.challengeCard === 'reverse') {
                         t.reverseTimer--;
                         if (t.reverseTimer <= 0) {
@@ -1503,11 +1382,9 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // ============ HAND DETECTION ============
+        // ============ HAND DETECTION (FIXED) ============
         function onHandResults(results) {
-            game.hands.left.visible = false;
-            game.hands.right.visible = false;
-
+            // Reset indicators
             document.getElementById('hand-left').style.display = 'none';
             document.getElementById('hand-right').style.display = 'none';
 
@@ -1515,45 +1392,94 @@
                 return;
             }
 
+            // Collect all detected hands with their positions
+            const detectedHands = [];
+
             results.multiHandLandmarks.forEach((landmarks, idx) => {
                 const wrist = landmarks[0];
                 const indexTip = landmarks[8];
 
-                const side = wrist.x > 0.5 ? 'left' : 'right';
-                const team = side === 'left' ? 'a' : 'b';
+                // Get handedness if available
+                const handedness = results.multiHandedness && results.multiHandedness[idx]
+                    ? results.multiHandedness[idx].label
+                    : null;
 
-                const hand = game.hands[side];
-                hand.visible = true;
-                hand.x = (1 - wrist.x) * 360;
-                hand.y = wrist.y * 270;
+                detectedHands.push({
+                    wrist,
+                    indexTip,
+                    handedness,
+                    x: wrist.x,
+                    y: wrist.y
+                });
+            });
 
-                const indicator = document.getElementById(`hand-${side}`);
-                indicator.style.display = 'block';
-                indicator.style.left = hand.x + 'px';
-                indicator.style.top = hand.y + 'px';
+            // Assign hands to teams based on screen position
+            // Team A = LEFT side of camera (right side of mirrored preview, x < 0.5)
+            // Team B = RIGHT side of camera (left side of mirrored preview, x > 0.5)
 
-                const isRaised = wrist.y < 0.35;
-                const flickVelocity = (hand.lastY || wrist.y) - indexTip.y;
-                const isFlicking = flickVelocity > 0.06;
+            // Find best hand for each side (closest to that side's edge)
+            let teamAHand = null;
+            let teamBHand = null;
 
-                hand.lastY = indexTip.y;
-
-                let gestureText = '';
-                if (isRaised) gestureText = 'RAISED';
-                else if (isFlicking) gestureText = 'FLICK!';
-                document.getElementById(`gesture-${side}`).textContent = gestureText;
-
-                const t = game.teams[team];
-                if (t.eliminated) return;
-
-                if (t.phase === 'drink' && isRaised && !t.handRaised) {
-                    onHandRaised(team);
+            detectedHands.forEach(hand => {
+                // Hand in left half of camera (Team A zone)
+                if (hand.x < 0.5) {
+                    if (!teamAHand || hand.x < teamAHand.x) {
+                        teamAHand = hand;
+                    }
                 }
-
-                if (t.phase === 'flip' && isFlicking) {
-                    handleFlip(team);
+                // Hand in right half of camera (Team B zone)
+                else {
+                    if (!teamBHand || hand.x > teamBHand.x) {
+                        teamBHand = hand;
+                    }
                 }
             });
+
+            // Process Team A hand
+            if (teamAHand) {
+                processHand('a', teamAHand, 'left');
+            }
+
+            // Process Team B hand
+            if (teamBHand) {
+                processHand('b', teamBHand, 'right');
+            }
+        }
+
+        function processHand(team, hand, indicatorSide) {
+            const t = game.teams[team];
+
+            // Update indicator position (mirrored for preview)
+            const indicator = document.getElementById(`hand-${indicatorSide}`);
+            indicator.style.display = 'block';
+            indicator.style.left = ((1 - hand.x) * 320) + 'px';
+            indicator.style.top = (hand.y * 180) + 'px';
+
+            const isRaised = hand.wrist.y < 0.35;
+
+            // Calculate flick velocity
+            const flickVelocity = (t.lastFlickY || hand.wrist.y) - hand.indexTip.y;
+            const isFlicking = flickVelocity > 0.06;
+            t.lastFlickY = hand.indexTip.y;
+
+            // Update gesture label
+            let gestureText = '';
+            if (isRaised) gestureText = 'RAISED';
+            else if (isFlicking) gestureText = 'FLICK!';
+            document.getElementById(`gesture-${indicatorSide}`).textContent = gestureText;
+
+            // Handle game actions
+            if (t.phase === 'drink' && isRaised && !t.handRaised) {
+                onHandRaised(team);
+            }
+
+            // Flick with cooldown (500ms) to prevent double-triggers
+            const now = Date.now();
+            if (t.phase === 'flip' && isFlicking && (now - t.lastFlickTime > 500)) {
+                t.lastFlickTime = now;
+                handleFlip(team);
+            }
         }
 
         function handleFlip(team) {
@@ -1567,20 +1493,20 @@
             let successChance;
             let zone;
 
-            // Determine zone and success chance
+            // Determine zone
             const shrinkFactor = game.config.shrinkingZones ? (1 - t.progress * game.config.shrinkFactor) : 1;
-            const adjustedGreenMin = 50 - (15 * shrinkFactor);
-            const adjustedGreenMax = 50 + (15 * shrinkFactor);
-            const adjustedSweetMin = 50 - (2.5 * shrinkFactor);
-            const adjustedSweetMax = 50 + (2.5 * shrinkFactor);
+            const sweetMin = 50 - (2.5 * shrinkFactor);
+            const sweetMax = 50 + (2.5 * shrinkFactor);
+            const greenMin = 50 - (15 * shrinkFactor);
+            const greenMax = 50 + (15 * shrinkFactor);
 
-            if (pos >= adjustedSweetMin && pos <= adjustedSweetMax) {
+            if (pos >= sweetMin && pos <= sweetMax) {
                 successChance = zoneConfig.sweetSpotChance;
                 zone = 'sweet';
-            } else if (pos >= adjustedGreenMin && pos <= adjustedGreenMax) {
+            } else if (pos >= greenMin && pos <= greenMax) {
                 successChance = zoneConfig.greenChance;
                 zone = 'green';
-            } else if (pos >= zoneConfig.yellowMin && pos <= zoneConfig.yellowMax) {
+            } else if (pos >= 20 && pos <= 80) {
                 successChance = zoneConfig.yellowChance;
                 zone = 'yellow';
             } else {
@@ -1608,45 +1534,31 @@
                 result.textContent = 'LANDED!';
                 result.className = 'result-flash success';
 
-                // Confetti!
+                // Confetti
                 const cupArea = cup.getBoundingClientRect();
                 spawnConfetti(cupArea.left + cupArea.width/2, cupArea.top, zone === 'sweet' ? 50 : 30);
 
-                // Determine feedback type
+                // Feedback
                 if (t.attempts >= 4) {
                     showFeedback(team, 'clutch');
                 } else if (zone === 'sweet') {
                     showFeedback(team, 'perfect');
-                    if (t.callout === 'perfect') {
-                        showDrinkingPrompt('perfectBonus');
-                    }
                 } else if (zone === 'green') {
                     showFeedback(team, 'clean');
-                    if (t.callout === 'clean') {
-                        showDrinkingPrompt('perfectBonus');
-                    }
                 } else if (zone === 'yellow') {
                     showFeedback(team, 'sloppy');
                 } else {
                     showFeedback(team, 'lucky');
-                    // Lucky bastard rule - other team drinks!
                     if (game.mode === 'chaos') {
                         showDrinkingPrompt('luckyBastard');
                     }
-                }
-
-                // Check wrong callout
-                if (t.callout === 'perfect' && zone !== 'sweet') {
-                    setTimeout(() => showDrinkingPrompt('wrongCallout'), 1500);
-                } else if (t.callout === 'clean' && zone !== 'green' && zone !== 'sweet') {
-                    setTimeout(() => showDrinkingPrompt('wrongCallout'), 1500);
                 }
 
                 t.flips++;
                 t.combo++;
                 if (t.combo > t.bestCombo) t.bestCombo = t.combo;
 
-                if (game.mode === 'speed' || game.mode === 'chaos') {
+                if (game.config.timed) {
                     game.globalCombo++;
                     if (game.globalCombo > game.globalBestCombo) game.globalBestCombo = game.globalCombo;
                 }
@@ -1657,18 +1569,16 @@
                 result.textContent = 'MISS!';
                 result.className = 'result-flash fail';
 
-                // Screen shake on miss
                 triggerScreenShake(false);
 
-                // Combo breaker
                 if (t.combo >= 3) {
                     showDrinkingPrompt('comboBreaker');
                 }
 
                 t.combo = 0;
-                if (game.mode === 'speed' || game.mode === 'chaos') game.globalCombo = 0;
+                if (game.config.timed) game.globalCombo = 0;
 
-                // Feedback based on zone
+                // Feedback
                 if (zone === 'green' || zone === 'sweet') {
                     showFeedback(team, 'choke');
                     if (game.mode === 'chaos') {
@@ -1683,15 +1593,20 @@
                     }
                 }
 
-                // Check for sudden death or pressure card elimination
                 const maxAttempts = t.challengeCard === 'pressure' ? 1 : game.config.maxAttempts;
 
-                if (game.mode === 'sudden' || t.challengeCard === 'pressure') {
-                    setTimeout(() => eliminatePlayer(team), 1000);
+                // Pressure card elimination
+                if (t.challengeCard === 'pressure') {
+                    setTimeout(() => {
+                        result.textContent = 'MERCY!';
+                        cup.className = 'cup flipped';
+                        t.flips++;
+                        setTimeout(() => progressPlayer(team), 800);
+                    }, 800);
                     return;
                 }
 
-                // Check mercy rule
+                // Mercy rule
                 if (t.attempts >= maxAttempts) {
                     setTimeout(() => {
                         result.textContent = 'MERCY!';
@@ -1705,6 +1620,7 @@
                         setTimeout(() => progressPlayer(team), 800);
                     }, 800);
                 } else {
+                    // Retry
                     setTimeout(() => {
                         cup.className = 'cup on-edge';
                         result.textContent = '';
@@ -1733,38 +1649,19 @@
             t.currentFlip++;
             game.roundNumber++;
 
-            // Speed/Chaos mode - just keep flipping
-            if (game.mode === 'speed' || game.mode === 'chaos') {
+            // Chaos mode - timed, keep flipping
+            if (game.config.timed) {
                 document.getElementById(`flips-${team}`).textContent = `FLIPS: ${t.flips}`;
                 setTimeout(() => startDrinkPhase(team), 500);
                 return;
             }
 
             // Classic mode - check if player completed their flips
-            if (game.mode === 'classic') {
-                if (t.currentFlip >= game.config.flipsPerPlayer) {
-                    document.getElementById(`dot-${team}-${t.progress}`).classList.remove('active');
-                    document.getElementById(`dot-${team}-${t.progress}`).classList.add('done');
-                    t.progress++;
-                    t.currentFlip = 0;
-
-                    if (t.progress >= count) {
-                        endGame(team);
-                        return;
-                    }
-
-                    document.getElementById(`dot-${team}-${t.progress}`).classList.add('active');
-                }
-
-                setTimeout(() => startDrinkPhase(team), 800);
-                return;
-            }
-
-            // Sudden death mode
-            if (game.mode === 'sudden') {
+            if (t.currentFlip >= game.config.flipsPerPlayer) {
                 document.getElementById(`dot-${team}-${t.progress}`).classList.remove('active');
                 document.getElementById(`dot-${team}-${t.progress}`).classList.add('done');
                 t.progress++;
+                t.currentFlip = 0;
 
                 if (t.progress >= count) {
                     endGame(team);
@@ -1772,36 +1669,8 @@
                 }
 
                 document.getElementById(`dot-${team}-${t.progress}`).classList.add('active');
-                setTimeout(() => startDrinkPhase(team), 800);
-            }
-        }
-
-        function eliminatePlayer(team) {
-            const t = game.teams[team];
-            const count = team === 'a' ? game.teamACount : game.teamBCount;
-
-            document.getElementById(`dot-${team}-${t.progress}`).classList.remove('active');
-            document.getElementById(`dot-${team}-${t.progress}`).classList.add('eliminated');
-
-            t.progress++;
-
-            if (t.progress >= count) {
-                t.eliminated = true;
-                updateStatus(team, 'ELIMINATED', '');
-                const otherTeam = team === 'a' ? 'b' : 'a';
-
-                if (game.teams[otherTeam].eliminated) {
-                    endGame();
-                } else {
-                    const otherCount = otherTeam === 'a' ? game.teamACount : game.teamBCount;
-                    if (game.teams[otherTeam].progress >= otherCount) {
-                        endGame(otherTeam);
-                    }
-                }
-                return;
             }
 
-            document.getElementById(`dot-${team}-${t.progress}`).classList.add('active');
             setTimeout(() => startDrinkPhase(team), 800);
         }
 
@@ -1812,7 +1681,7 @@
             const winnerText = document.getElementById('winner-text');
             const loserText = document.getElementById('loser-text');
 
-            if (game.mode === 'speed' || game.mode === 'chaos') {
+            if (game.config.timed) {
                 const aFlips = game.teams.a.flips;
                 const bFlips = game.teams.b.flips;
 
@@ -1835,7 +1704,7 @@
             } else if (winner) {
                 winnerText.textContent = winner === 'a' ? 'TEAM A WINS!' : 'TEAM B WINS!';
                 winnerText.className = 'winner-text team-' + winner;
-                loserText.textContent = game.mode === 'sudden' ? 'SURVIVORS!' : 'LOSERS DRINK!';
+                loserText.textContent = 'LOSERS DRINK!';
 
                 document.getElementById('stat-flips').textContent = game.teams.a.flips + game.teams.b.flips;
                 document.getElementById('stat-combo').textContent = Math.max(game.teams.a.bestCombo, game.teams.b.bestCombo);
@@ -1847,11 +1716,9 @@
 
         function resetGame() {
             document.getElementById('win-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'none';
-            document.getElementById('setup-screen').style.display = 'flex';
-            document.getElementById('mode-timer').classList.add('hidden');
-            document.getElementById('combo-display').classList.add('hidden');
-            document.getElementById('callout-ui').style.display = 'none';
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('landing-screen').classList.add('active');
+            document.getElementById('game-header').classList.add('hidden');
 
             game.started = false;
         }
@@ -1873,7 +1740,7 @@
         async function setup() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 640, height: 480, facingMode: 'user' }
+                    video: { width: 1280, height: 720, facingMode: 'user' }
                 });
                 video.srcObject = stream;
                 previewVideo.srcObject = stream;
@@ -1884,8 +1751,8 @@
                     onFrame: async () => {
                         await hands.send({ image: video });
                     },
-                    width: 640,
-                    height: 480
+                    width: 1280,
+                    height: 720
                 });
                 await cam.start();
 
